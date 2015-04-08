@@ -35,3 +35,14 @@ void Piece::died(){
 		dead = true;
 }
 
+int Piece::getType(){
+	return type;
+}
+
+bool Piece::getWhite(){
+	return getWhite;
+}
+
+bool Piece::getDead(){
+	return getDead;
+}

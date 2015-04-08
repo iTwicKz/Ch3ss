@@ -1,14 +1,15 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "Piece.h"
 #include "Piece.cpp"
 using namespace std;
 
 Pawn::Pawn() : Piece (bool white, int positionX, int positionY){
 		this->type = 0 //Pawn
-		this->move[0] = 0;
-		this->move[1] = 0;
+		move.push_back() = 0;
+		move.push_back() = 0;
 		this->position[0] = positionX;	//X Location
 		this->position[1] = positionY;	//Y location
 		this->sprite = "PawnPics";	//Ask Darien
