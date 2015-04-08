@@ -15,7 +15,7 @@ class Piece {
 		int sprite;					//Image file link
 		bool white;					//black or white
 		bool dead;					//on board or not
-		virtual void movePiece() const;
+		//virtual void movePiece() const;
 
 
 	public:
@@ -48,6 +48,7 @@ class Pawn : public Piece{
 			firstMoved = true;
 		};
 		virtual void movePiece();
+		virtual void movePiece() const;
 		int getType();			//returns type of piece
 		void transformer();		//once across board, option to change
 };
