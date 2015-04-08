@@ -6,7 +6,11 @@
 #include "Piece.cpp"
 using namespace std;
 
-Bishop::Bishop() : Piece (bool white, int positionX, int positionY){
+Bishop::Bishop() : Piece(){
+
+}
+
+Bishop::Bishop() : Piece(bool white, int positionX, int positionY){
 		this->type = 1 //Bishop
 		move.push_back() = 0;
 		move.push_back() = 0;
@@ -17,7 +21,7 @@ Bishop::Bishop() : Piece (bool white, int positionX, int positionY){
 		this->dead = false;
 	}
 
-void Bishop::move(){
+virtual void Bishop::movePiece(){
 
 		if(abs(move[0] - position[0]) == abs(move[1] - position[1]){
 			if(collision()){
