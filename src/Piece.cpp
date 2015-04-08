@@ -56,5 +56,5 @@ bool Piece::getDead(){
 }
 
 int main(){
-	//Piece *pawn1 = new Pawn(true, 0, 0);
+	Piece *pawn1 = new Pawn(true, 0, 0);
 }
