@@ -6,7 +6,7 @@
 #include "Piece.cpp"
 using namespace std;
 
-Pawn::Pawn() : Piece (bool white, int positionX, int positionY){
+Pawn::Pawn(bool none) : Piece(bool white, int positionX, int positionY){
 		this->type = 0 //Pawn
 		move.push_back() = 0;
 		move.push_back() = 0;
@@ -19,7 +19,7 @@ Pawn::Pawn() : Piece (bool white, int positionX, int positionY){
 		this->firstMoved = true;
 	}
 
-void Pawn::move(){
+virtual void Pawn::movePiece(){
 
 		int val1 = -1;
 		int val2 = -2;
