@@ -6,31 +6,21 @@
 #include "Piece.cpp"
 using namespace std;
 
-Bishop::Bishop() : Piece(){
+void Bishop::movePiece(){
 
-}
-
-Bishop::Bishop() : Piece(bool white, int positionX, int positionY){
-		this->type = 1 //Bishop
-		move.push_back() = 0;
-		move.push_back() = 0;
-		this->position[0] = positionX;	//X Location
-		this->position[1] = positionY;	//Y location
-		this->sprite = "BishopPics";	//Ask Darien
-		this->white = white;
-		this->dead = false;
-	}
-
-virtual void Bishop::movePiece(){
-
-		if(abs(move[0] - position[0]) == abs(move[1] - position[1]){
-			if(collision()){
-				position[0] = move[0];
+	if(move[0] != position[0] && move[1] != position[1]){
+		if(abs(move[0] - position[0]) == abs(move[1] - position[1])){
+			if(collisionPath()){			//checks if there are any paths in the piece's path
+				if(collisionAttack()){		//checks if there is an object in move destination	
+					kill(move);					//kills opposing piece if so
+				}
+				position[0] = move[0];		//occupies the spot
 				position[1] = move[1];
 			}
 		}
+	}
 
-		else cout<<"Brahhhhhhhhhhh you can't move dat";
+	else cout<<"Brahhhhhhhhhhh you can't move dat";
 } 
 
 int Bishop::getType(){
