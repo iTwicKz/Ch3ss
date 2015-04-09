@@ -40,7 +40,7 @@ class Piece {
 
 class Pawn : public Piece{
 	private:
-		bool firstMoved;			//checks if pawn has been moved
+		bool firstMoved;			//checks if pawn has been moved for two move rule
 
 	public:
 		Pawn(bool white, int positionX, int positionY, int type = 0, string sprite = "PawnPic") : 
@@ -72,6 +72,20 @@ class Knight : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Knight(){};
+		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		int getType();				//returns type of piece
+};
+
+class Rook : public Piece{
+	private:
+		bool firstMoved;			//checks if rook has been moved for castling rule
+
+	public:
+		Rook(bool white, int positionX, int positionY, int type = 3, string sprite = "RookPic") : 
+			Piece(white, positionX, positionY, type, sprite){
+			firstMoved = true;
+		};
+		~Rook(){};
 		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };

@@ -1,32 +1,43 @@
-class Rook : public Piece {
+#include <string>
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include "Piece.h"
+#include "Piece.cpp"
+using namespace std;
 	
-	Rook(bool firstMoved) : Piece (bool white, int positionX, int positionY) {
-		
-		//Don't know what to do about initiating firstmoved
-		this->type = 3 //Rook
-		this->move[0] = 0;
-		this->move[1] = 0;
-		this->position[0] = positionX;	//X Location
-		this->position[1] = positionY;	//Y location
-		this->sprite = "RookPics";	//Ask Darien
-		this->white = white;
-		this->dead = false;
-	}
-	
-	void move() {
+void Rook::movePiece() {
+
+	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		int moveSpacesHor = move[0] - position[0];
-		int moveSpacesVer = move[1] - position[1]
+		int moveSpacesVer = move[1] - position[1];
 		
-		if( moveSpacesHor!=0 && move[1] == position[1]) {
-			if( collision() ) {
+		if(!collisionPath()){				//if there is NOT an object in its path
+			if( moveSpacesHor!=0 && move[1] == position[1]) {
+				if(collisionAttack()){
+					kill(move);
+				}
 				position[0] = move[0];
-				firstMoved = true;
-			}
-		} else if( moveSpacesVer !=0 && move[0] == position[0]) {
-			if( collision() ) {
 				position[1] = move[1];
-				firstMoved = true;
-			}
-		} else cout<<"Brahhhhhhhhhhh you can't move dat";
-		//Work on castling	
+				firstMoved = false;
+				
+			} else if( moveSpacesVer !=0 && move[0] == position[0]) {
+				if( collisionAttack() ) {
+					kill(move);
+				}
+				position[0] = move[0];
+				position[1] = move[1];
+				firstMoved = false;
+				
+			} else cout<<"Brahhhhhhhhhhh you can't move dat";
+			//Work on castling	
+		}
 	}
+
+	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
+
+}
+
+int Rook::getType(){
+	return type;
+}
