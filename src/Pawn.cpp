@@ -5,21 +5,7 @@
 #include "Piece.h"
 #include "Piece.cpp"
 using namespace std;
-
-Pawn::Pawn(bool none) : Piece(bool white, int positionX, int positionY){
-		this->type = 0 //Pawn
-		move.push_back() = 0;
-		move.push_back() = 0;
-		this->position[0] = positionX;	//X Location
-		this->position[1] = positionY;	//Y location
-		this->sprite = "PawnPics";	//Ask Darien
-		this->white = white;
-		this->dead = false;
-
-		this->firstMoved = true;
-	}
-
-virtual void Pawn::movePiece(){
+void Pawn::movePiece(){
 
 		int val1 = -1;
 		int val2 = -2;
@@ -28,40 +14,41 @@ virtual void Pawn::movePiece(){
 			val1 = abs(val1);
 			val2 = abs(val2);
 		}
+	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0]){
-			firstMoved = false;
-			//check collision() to check if it can move there
-			//if(collision()){
-			position[0] = moved[0];
-			position[1] = moved[1];
-			//}
+			firstMoved = false;			//marks that the object has moved
+			if(!collisionPath()){			//if there is NOT an object in its path
+				position[0] = move[0];		//occupies space
+				position[1] = move[1];
+			}
 		}
 		else if(move[1] - position[1] == val1 && position[0] == move[0]){
-			firstMoved = false;
+			firstMoved = false;			//marks that the object has moved
 			//we can move dat
-			if(collision()){
-			position[0] = moved[0];
-			position[1] = moved[1];
+			if(!collisionPath()){		//if there is NOT an object in its path
+				position[0] = move[0];		//occupies space
+				position[1] = move[1];
 			}
 		}
 		else if(move[1] - position[1] == val1 && abs(move[1] - position[1]) == 1){
-			if(collision()){
-				firstMoved = false;
-				kill(move);
-				position[0] = moved[0];
-				position[1] = moved[1];
+			if(collisionAttack()){		//checks if there IS an object in that space
+				firstMoved = false;			//marks that the object has moved
+				kill(move);					//kills the opposing object
+				position[0] = move[0];		//occupies the
+				position[1] = move[1];
 			}
 		}
+		else cout<<"Brahhhhhhhhhhh you can't move dat";
 
-		int end = 0;			//set end location for black
-		if(white) end = 7;		//set end location for white
+	}
+	else cout<<"That is the spot you are currnetly in";		//Most likely simply ignore
+
+		int end = 0;			//set opposing board row location for black
+		if(white) end = 7;		//set opposing board row location for white
 		if(position[1] == end) transformer();
 
 		//put en passat VW in here
-		else cout<<"Brahhhhhhhhhhh you can't move dat";
-
-		collisionDetect();
-} 
+}
 
 int Pawn::getType(){
 		return type;
