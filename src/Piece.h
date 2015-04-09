@@ -9,24 +9,24 @@ using namespace std;
 
 class Piece {
 	protected:
-		int type;					//Queen, King, etc.
+		int type;					//Queen, King, 	etc.
 		vector<int>move;			//Location
 		vector<int>position;		//Position in 2D Array Gameboard
-		int sprite;					//Image file link
+		string sprite;				//Image file link
 		bool white;					//black or white
 		bool dead;					//on board or not
 		//virtual void movePiece() const;
 
 
 	public:
-		Piece(bool white, int positionX, int positionY, int type, int sprite){
+		Piece(bool white, int positionX, int positionY, int type, string sprite){
 			this->type = type;
 			this->sprite = sprite;
 			move.push_back(0);
 			move.push_back(0);
 			this->white = white;
 			position.push_back(positionX);
-			position.push_back(positionY);
+			position.push_back(positionY); 
 		}
 		virtual void movePiece() = 0;
 		void parseMove(string position);			//Changes from A1 to 00 and H8 to 77, put into move()
@@ -40,26 +40,28 @@ class Piece {
 
 class Pawn : public Piece{
 	private:
-		bool firstMoved;		//checks if pawn has been moved
+		bool firstMoved;			//checks if pawn has been moved
 
 	public:
-		Pawn(bool white, int positionX, int positionY, int type = 0, int sprite = 0) : 
+		Pawn(bool white, int positionX, int positionY, int type = 0, string sprite = "PawnPic") : 
 			Piece(white, positionX, positionY, type, sprite){
 			firstMoved = true;
 		};
-		virtual void movePiece();
-		virtual void movePiece() const;
-		int getType();			//returns type of piece
-		void transformer();		//once across board, option to change
+		~Pawn(){};
+		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		int getType();				//returns type of piece
+		void transformer();			//once across board, option to change
 };
 
 
 class Bishop : public Piece{
 
 	public:
-		Bishop(bool white, int positionX, int positionY, int type = 1, int sprite = 1) : 
+		Bishop(bool white, int positionX, int positionY, int type = 1, string sprite = "BishopPic") : 
 			Piece(white, positionX, positionY, type, sprite){
 		};
-		void movePiece();
-		int getType();			//returns type of piece
+		~Bishop(){};
+		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		int getType();				//returns type of piece
 };
+
