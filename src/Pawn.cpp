@@ -24,7 +24,6 @@ void Pawn::movePiece(){
 		}
 		else if(move[1] - position[1] == val1 && position[0] == move[0]){
 			firstMoved = false;			//marks that the object has moved
-			//we can move dat
 			if(!collisionPath()){		//if there is NOT an object in its path
 				position[0] = move[0];		//occupies space
 				position[1] = move[1];
@@ -34,14 +33,14 @@ void Pawn::movePiece(){
 			if(collisionAttack()){		//checks if there IS an object in that space
 				firstMoved = false;			//marks that the object has moved
 				kill(move);					//kills the opposing object
-				position[0] = move[0];		//occupies the
+				position[0] = move[0];		//occupies the space
 				position[1] = move[1];
 			}
 		}
 		else cout<<"Brahhhhhhhhhhh you can't move dat";
 
 	}
-	else cout<<"That is the spot you are currnetly in";		//Most likely simply ignore
+	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
 
 		int end = 0;			//set opposing board row location for black
 		if(white) end = 7;		//set opposing board row location for white
