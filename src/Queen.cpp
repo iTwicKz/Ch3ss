@@ -1,32 +1,45 @@
-class Queen : public Piece {
-	
-	Queen : Piece (bool white, int positionX, int positionY) {
-		this->type = 4 //Queen
-		this->move[0] = 0;
-		this->move[1] = 0;
-		this->position[0] = positionX;	//X Location
-		this->position[1] = positionY;	//Y location
-		this->sprite = "QueenPics";	//Ask Darien
-		this->white = white;
-		this->dead = false;
-	}
-	
-	void move() {
+#include <string>
+#include <vector>
+#include <iostream>
+#include <cmath>
+#include "Piece.h"
+#include "Piece.cpp"
+using namespace std;
+
+void Queen::movePiece() {
+
+	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		int moveSpacesHor = move[0] - position[0];
-		int moveSpacesVer = move[1] - position[1]
+		int moveSpacesVer = move[1] - position[1];
 		
-		if( moveSpacesHor!=0 && move[1] == position[1]) {
-			if( collision() ) {
-				position[0] = move[0];
-			}
-		} else if( moveSpacesVer !=0 && move[0] == position[0]) {
-			if( collision() ) {
-				position[1] = move[1];
-			}
-		} else if( abs(moveSpacesHor) == abs(moveSpacesVer)) {
-			if( collision() ) {
-				position[0] = move[0];
-				position[1] = move[1];
-			} 
-		} else cout<<"Brahhhhhhhhhhh you can't move dat";	
+		if(collisionPath()){			//checks if there are any paths in the piece's path
+			if( moveSpacesHor!=0 && move[1] == position[1]) {
+				if(collisionAttack()){		//checks if there is an object in move destination	
+					kill(move);					//kills opposing piece if so
+				}
+					position[0] = move[0];		//occupies the spot
+					position[1] = move[1];
+				
+			} else if( moveSpacesVer !=0 && move[0] == position[0]) {
+				if(collisionAttack()){		//checks if there is an object in move destination	
+					kill(move);					//kills opposing piece if so
+				}
+					position[0] = move[0];		//occupies the spot
+					position[1] = move[1];
+				
+			} else if( abs(moveSpacesHor) == abs(moveSpacesVer)) {
+				if(collisionAttack()){		//checks if there is an object in move destination	
+					kill(move);					//kills opposing piece if so
+				}
+					position[0] = move[0];		//occupies the spot
+					position[1] = move[1];
+				
+			} else cout<<"Brahhhhhhhhhhh you can't move dat";
+
+		} else cout<<"There's an object in your path";	
 	}
+}
+
+int Queen::getType(){
+	return type;
+}

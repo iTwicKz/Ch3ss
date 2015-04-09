@@ -77,6 +77,7 @@ class Knight : public Piece{
 };
 
 class Rook : public Piece{
+
 	private:
 		bool firstMoved;			//checks if rook has been moved for castling rule
 
@@ -86,6 +87,17 @@ class Rook : public Piece{
 			firstMoved = true;
 		};
 		~Rook(){};
+		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		int getType();				//returns type of piece
+};
+
+class Queen : public Piece{
+
+	public:
+		Queen(bool white, int positionX, int positionY, int type = 4, string sprite = "QueenPic") : 
+			Piece(white, positionX, positionY, type, sprite){
+		};
+		~Queen(){};
 		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
