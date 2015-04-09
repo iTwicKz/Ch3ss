@@ -65,3 +65,14 @@ class Bishop : public Piece{
 		int getType();				//returns type of piece
 };
 
+class Knight : public Piece{
+
+	public:
+		Knight(bool white, int positionX, int positionY, int type = 2, string sprite = "KnightPic") : 
+			Piece(white, positionX, positionY, type, sprite){
+		};
+		~Knight(){};
+		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		int getType();				//returns type of piece
+};
+

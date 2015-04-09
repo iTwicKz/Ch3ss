@@ -8,7 +8,7 @@ using namespace std;
 
 void Bishop::movePiece(){
 
-	if(move[0] != position[0] && move[1] != position[1]){
+	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		if(abs(move[0] - position[0]) == abs(move[1] - position[1])){
 			if(collisionPath()){			//checks if there are any paths in the piece's path
 				if(collisionAttack()){		//checks if there is an object in move destination	

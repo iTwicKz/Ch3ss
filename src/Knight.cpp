@@ -1,42 +1,32 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "Piece.h"
 #include "Piece.cpp"
 using namespace std;
 
-Knight::Knight() : Piece (bool white, int positionX, int positionY){
-		this->type = 2; //Knight
-		this->move[0] = 0;
-		this->move[1] = 0;
-		this->position[0] = positionX;	//X Location
-		this->position[1] = positionY;	//Y location
-		this->sprite = "KnightPics";	//Ask Darien
-		this->white = white;
-		this->dead = false;
+void Knight::movePiece(){
 
-		this->firstMoved = true;
-	}
-
-void Knight::move(){
-
+	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		int moveSpaceHor = move[0] - position[0];
 		int moveSpaceVer = move[1] - position[1];
 		
-		if((abs(moveSpaceHor == 1 || moveSpaceHor == 2)) && abs(moveSpaceHor + moveSpaceVer) == 3){
-			
-			position[0] = move[0];
-			position[1] = move[1];
-			
+		if(!collisionPath()){				//if there is NOT an object in its path
+			if((abs(moveSpaceHor == 1 || moveSpaceHor == 2)) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3){
+				if(collisionAttack()){		//checks if there IS an object in that space
+					kill(move);					//kills the opposing object
+				}
+					position[0] = move[0];		//occupies the space
+					position[1] = move[1];
+	
 			}else{
-				
-			cout << "Invalid movement children";
-			
-			
-				};
-		
+				cout << "Invalid movement children";	
+			}
+		}
+	}
 
-		collisionDetect();
+	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
 } 
 
 int Knight::getType(){
