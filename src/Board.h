@@ -32,7 +32,7 @@ class Board
 		//CImg<unsigned char> graveyard(480,480,1,3,0);
 	
 	//Displays (each display is a new window)
-	protected:
+	public:
 		CImgDisplay main_disp(board,"Chess");
 		//CImgDisplay graveyard_disp(graveyard,"Graveyard");
 	
@@ -102,4 +102,4 @@ class Board
 		srcx =destx;
 		srcy =desty;
 	}
-}
+};
