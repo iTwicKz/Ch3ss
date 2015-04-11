@@ -51,7 +51,10 @@ void updateboard()
 {
 	chessboard.display(main_disp);//update board
 }
-int returnpiece()
+int returnpiece(int x, int y)//returns piece at spot on board given
+{
+	return boardarray[x][y];
+}
 void setup()
 {
 	//setup board
