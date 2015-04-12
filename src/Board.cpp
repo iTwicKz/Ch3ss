@@ -51,8 +51,9 @@ CImgDisplay main_disp(chessboard,"Chess");
 int boardarray[8][8];
 
 //last coordinates start outside board
-int lastx = 0;
-int lasty = 0;
+int lastx = 8;
+int lasty = 8;
+int lastp = 0;
 //Board Methods
 
 void updateboard()
@@ -153,32 +154,33 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 
 void handleclick(int p, int x, int y, bool b)
 {
-	if(b && p > 0)
+	if(b && (lastp > 0))
 	{
+		//check if valid move
 		CImg<unsigned char> piece;
-		if(p == WHITEKING)
+		if(lastp == WHITEKING)
 			piece = wking;
-		if(p == WHITEQUEEN)
+		if(lastp == WHITEQUEEN)
 			piece = wqueen;
-		if(p == WHITEKNIGHT)
+		if(lastp == WHITEKNIGHT)
 			piece = wknight;
-		if(p == WHITEBISHOP)
+		if(lastp == WHITEBISHOP)
 			piece = wbishop;
-		if(p == WHITEROOK)
+		if(lastp == WHITEROOK)
 			piece = wrook;
-		if(p == WHITEPAWN)
+		if(lastp == WHITEPAWN)
 			piece = wpawn;
-		if(p == BLACKKING)
+		if(lastp == BLACKKING)
 			piece = bking;
-		if(p == BLACKQUEEN)
+		if(lastp == BLACKQUEEN)
 			piece = bqueen;
-		if(p == BLACKKNIGHT)
+		if(lastp == BLACKKNIGHT)
 			piece = bknight;
-		if(p == BLACKBISHOP)
+		if(lastp == BLACKBISHOP)
 			piece = bbishop;
-		if(p == BLACKROOK)
+		if(lastp == BLACKROOK)
 			piece = brook;
-		if(p == BLACKPAWN)
+		if(lastp == BLACKPAWN)
 			piece = bpawn;
 		movedraw(piece,lastx,lasty,x,y,false);
 	}
@@ -186,5 +188,6 @@ void handleclick(int p, int x, int y, bool b)
 	{
 		lastx = x;
 		lasty = y;
+		lastp = p;
 	}
 }
