@@ -1,26 +1,31 @@
 #include "CImg.h"
-//#include "Player.cpp"
-//#include "Piece.h"
-//#include "Piece.cpp"
-
+#include "pieceTest.h"
+#include "pawnTest.cpp"
 
 #ifndef IMAGEPATH
 #define IMAGEPATH "res/"
 #endif
 
-#define BLANK 0
-#define WHITEKING 1
-#define WHITEQUEEN 2
-#define WHITEKNIGHT 3
-#define WHITEBISHOP 4
-#define WHITEROOK 5
-#define WHITEPAWN 6
-#define BLACKKING 7
-#define BLACKQUEEN 8
-#define BLACKKNIGHT 9
-#define BLACKBISHOP 10
-#define BLACKROOK 11
-#define BLACKPAWN 12
+#define BLANK 10
+#define WHITEKING 11
+#define WHITEQUEEN 12
+#define WHITEKNIGHT 13
+#define WHITEBISHOP 14
+#define WHITEROOK 15
+#define WHITEPAWN 16
+#define BLACKKING 17
+#define BLACKQUEEN 18
+#define BLACKKNIGHT 19
+#define BLACKBISHOP 20
+#define BLACKROOK 21
+#define BLACKPAWN 22
+
+#define PAWN 0
+#define BISHOP 1
+#define KNIGHT 2
+#define ROOK 3
+#define QUEEN 4
+#define KING 5
 
 using namespace cimg_library;
 
@@ -40,38 +45,47 @@ CImg<unsigned char> wpawn(IMAGEPATH "Chess_plt60.png");
 CImg<unsigned char> bpawn(IMAGEPATH "Chess_pdt60.png");
 CImg<unsigned char> dsquare(IMAGEPATH "dsq.png");
 CImg<unsigned char> lsquare(IMAGEPATH "lsq.png");
-//CImg<unsigned char> graveyard(500,400,1,3,0);
+CImg<unsigned char> graveyard(500,400,1,3,0);
 	
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
-//CImgDisplay graveyard_disp(graveyard,"Graveyard");
+CImgDisplay graveyard_disp(graveyard,"Graveyard");
 
 //Boardarray 
-//TODO make boardarray array of Pieces
 int boardarray[8][8];
+Piece piecearray[8][8];
 
 //last coordinates start outside board
 int lastx = 8;
 int lasty = 8;
 int lastp = 0;
-//Board Methods
 
+//to write to screen/debug
+const unsigned char green[] = { 0,255,0 };
+
+
+//Board Methods
 void updateboard()
 {
 	chessboard.display(main_disp);//update board
+	graveyard.display(graveyard_disp);
 }
 
 int returnpiece(int x, int y)//returns piece at spot on board given
 {
-	return boardarray[x][y];
+	return piecearray[x][y].getType();
 }
 
 void setup()
 {
+	
 	//setup board
 	for(int i = 0; i < 8; i++)
 		for(int j = 0; j < 8; j++)
+		{
 			boardarray[i][j] = 0;
+			//piecearray[i][j].changeType(BLANK);//TODO FIX
+		}
 	//white
 	chessboard.draw_image(0,420,wrook);
 	boardarray[0][7] = WHITEROOK;
@@ -122,7 +136,7 @@ void setup()
 
 void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty, bool special)//x and y are 0-7
 {	
-	if(!special)//a special move is the en passant or castling
+	if(!special)//a special move is the en passant or castling or queening
 	{
 		chessboard.draw_image(destx*60, desty*60, piece);
 		//determine if square is light or dark
@@ -135,9 +149,10 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 		else if(srcx%2 != 0 && srcy%2 != 0)
 			chessboard.draw_image(srcx*60,srcy*60,lsquare);
 		
-		updateboard();
-		srcx = destx;
-		srcy = desty;
+		
+		updateboard();	
+		boardarray[destx][desty] = boardarray[srcx][srcy];
+		boardarray[srcx][srcx] = BLANK;
 	}
 	else//Assume that if command for special move is passed the requirements are met
 	{
@@ -146,15 +161,22 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 		{
 			//move rook to spot on side of king
 			//left
-			//if(srcx < destx)
+			if(srcx < destx)
+			{
+				//
+			}
 			//right
+			else if(srcx > destx)
+			{
+				//
+			}
 		}
 	}
 }
 
-void handleclick(int p, int x, int y, bool b)
+void handleclick(int p, int x, int y, bool b)//kinda working
 {
-	if(b && (lastp > 0))
+	if(b && (lastp != BLANK))
 	{
 		//check if valid move
 		CImg<unsigned char> piece;
