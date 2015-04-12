@@ -1,10 +1,13 @@
 #include "Board.cpp"
 #include "CImg.h"
+#include "pieceTest.h"
+
 using namespace cimg_library;
 
 int main() 
 {	
 	bool selectedalready = false;
+
 	setup();//setup board
 	updateboard();
 	while (!main_disp.is_closed()) //display loop until closed
@@ -22,9 +25,6 @@ int main()
 		selectedalready = !selectedalready;//flips
 		
 		//END TEST CODE
-		
-		
-		
 		}
 	}
 	return 0;
