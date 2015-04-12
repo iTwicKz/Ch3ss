@@ -1,5 +1,8 @@
 #include "CImg.h"
 //#include "Player.cpp"
+//#include "Piece.h"
+//#include "Piece.cpp"
+
 
 #ifndef IMAGEPATH
 #define IMAGEPATH "res/"
@@ -44,20 +47,30 @@ CImgDisplay main_disp(chessboard,"Chess");
 //CImgDisplay graveyard_disp(graveyard,"Graveyard");
 
 //Boardarray 
+//TODO make boardarray array of Pieces
 int boardarray[8][8];
 
+//last coordinates start outside board
+int lastx = 0;
+int lasty = 0;
 //Board Methods
+
 void updateboard()
 {
 	chessboard.display(main_disp);//update board
 }
+
 int returnpiece(int x, int y)//returns piece at spot on board given
 {
 	return boardarray[x][y];
 }
+
 void setup()
 {
 	//setup board
+	for(int i = 0; i < 8; i++)
+		for(int j = 0; j < 8; j++)
+			boardarray[i][j] = 0;
 	//white
 	chessboard.draw_image(0,420,wrook);
 	boardarray[0][7] = WHITEROOK;
@@ -75,9 +88,9 @@ void setup()
 	boardarray[6][7] = WHITEKNIGHT;
 	chessboard.draw_image(420,420,wrook);
 	boardarray[7][7] = WHITEROOK;
-	for(int i = 0; i <=420; i+=60)
+	for(int i = 0; i <=7; i++)
 	{
-		chessboard.draw_image(i,360,wpawn);
+		chessboard.draw_image(i*60,360,wpawn);
 		boardarray[i][6] = WHITEPAWN;
 	}
 		
@@ -98,17 +111,14 @@ void setup()
 	boardarray[6][0] = BLACKKNIGHT;
 	chessboard.draw_image(420,0,brook);
 	boardarray[7][0] = BLACKROOK;
-	for(int i = 0; i <=420; i+=60)
+	for(int i = 0; i <=7; i++)
 	{
-		chessboard.draw_image(i,60,bpawn);
+		chessboard.draw_image(i*60,60,bpawn);
 		boardarray[i][1] = BLACKPAWN;
 	}
 	updateboard();
 }
-void handleclick(int x, int y)
-{
-	
-}
+
 void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty, bool special)//x and y are 0-7
 {	
 	if(!special)//a special move is the en passant or castling
@@ -125,8 +135,8 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 			chessboard.draw_image(srcx*60,srcy*60,lsquare);
 		
 		updateboard();
-		srcx =destx;
-		srcy =desty;
+		srcx = destx;
+		srcy = desty;
 	}
 	else//Assume that if command for special move is passed the requirements are met
 	{
@@ -138,5 +148,43 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 			//if(srcx < destx)
 			//right
 		}
+	}
+}
+
+void handleclick(int p, int x, int y, bool b)
+{
+	if(b && p > 0)
+	{
+		CImg<unsigned char> piece;
+		if(p == WHITEKING)
+			piece = wking;
+		if(p == WHITEQUEEN)
+			piece = wqueen;
+		if(p == WHITEKNIGHT)
+			piece = wknight;
+		if(p == WHITEBISHOP)
+			piece = wbishop;
+		if(p == WHITEROOK)
+			piece = wrook;
+		if(p == WHITEPAWN)
+			piece = wpawn;
+		if(p == BLACKKING)
+			piece = bking;
+		if(p == BLACKQUEEN)
+			piece = bqueen;
+		if(p == BLACKKNIGHT)
+			piece = bknight;
+		if(p == BLACKBISHOP)
+			piece = bbishop;
+		if(p == BLACKROOK)
+			piece = brook;
+		if(p == BLACKPAWN)
+			piece = bpawn;
+		movedraw(piece,lastx,lasty,x,y,false);
+	}
+	else
+	{
+		lastx = x;
+		lasty = y;
 	}
 }
