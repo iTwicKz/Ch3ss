@@ -29,7 +29,7 @@ class Piece {
 			position.push_back(positionX);
 			position.push_back(positionY); 
 		}
-		virtual void movePiece() = 0;
+		virtual void movePiece() = 0;				//Pure virtualization forces child method to exist
 		void parseMove(string position);			//Changes from A1 to 00 and H8 to 77, put into move()
 		vector<int> getPosition();					//inteact with 2D array, check legal move
 		void died();								//determines if piece is taken, mutates bool dead
