@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -26,7 +27,8 @@ class Piece {
 		
 
 	public:
-		Piece(bool white, int positionX, int positionY, int type, string sprite){
+			Piece(){};
+			Piece(bool white, int positionX, int positionY, int type, string sprite){
 			this->type = type;
 			this->sprite = sprite;
 			//move.push_back(0);
@@ -41,9 +43,9 @@ class Piece {
 			this->blackScore = 0;
 			this->whiteScore = 0;
 			//int counterGraveyard = 0;
-
+			
 		}
-		virtual void movePiece() = 0;
+		void movePiece();
 		void parseMove(string position);			//Changes from A1 to 00 and H8 to 77, put into move()
 		int* getPosition();					//inteact with 2D array, check legal move
 		void died();								//determines if piece is taken, mutates bool dead
@@ -51,6 +53,8 @@ class Piece {
 		bool getWhite();
 		bool getDead();
 		void kill(int move[]);
+		bool collision(int move[], int position[]);
+		void changeType(int t);
 };
 
 
@@ -64,7 +68,7 @@ class Pawn : public Piece{
 			firstMoved = true;
 		};
 		~Pawn(){};
-		virtual int* movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
+		int* movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 		void transformer();			//once across board, option to change
 };
@@ -77,7 +81,7 @@ class Bishop : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Bishop(){};
-		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		void movePiece();	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
@@ -88,7 +92,7 @@ class Knight : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Knight(){};
-		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		void movePiece();	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
@@ -103,7 +107,7 @@ class Rook : public Piece{
 			firstMoved = true;
 		};
 		~Rook(){};
-		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		void movePiece();	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
@@ -114,7 +118,7 @@ class Queen : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Queen(){};
-		virtual void movePiece();	//checks if the move is allowed and if so, mutates position
+		void movePiece();	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
@@ -161,6 +165,72 @@ bool Piece::getWhite(){
 
 bool Piece::getDead(){
 	return dead;
+}
+
+void Piece::changeType(int t)
+{
+	this-> type = t;
+}
+
+bool Piece::collision(int move[], int position[]) { //Method that returns free as true or false
+	
+	int board[8][8];
+	
+	int moveSpacesHor = move[0] - position[0];
+	int moveSpacesVer = move[1] - position[1];
+	bool free = true;
+	if (abs(moveSpacesHor) == abs(moveSpacesVer)) { //Checks if diagnol
+		if (moveSpacesHor == moveSpacesVer && moveSpacesHor > 0) {	//diagnol + +
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (board[position[0] + i][position[1] + i] != 153) {
+					free = false;
+				}
+			}
+		} else if (moveSpacesHor == moveSpacesVer && moveSpacesHor < 0) { //diagnol - -
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (board[position[0] - i][position[1] - i] != 153) {
+					free = false;
+				}
+			}
+		} else if (abs(moveSpacesHor) == moveSpacesVer) { //diagnol - +
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (board[position[0] - i][position[1] + i] != 153) {
+					free = false;
+				}
+			}
+		} else if (moveSpacesHor == abs(moveSpacesVer)) { //diagnol + -
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (board[position[0] + i][position[1] - i] != 153) {
+					free = false;
+				}
+			}
+		}
+	} else if ((moveSpacesHor = 0) && (moveSpacesVer > 0)) { //Vertical +
+		for ( int i = 1; i<moveSpacesVer; i++) {
+			if (board[position[0]][position[1] + i] != 153) {
+					free = false;
+				}
+			}
+	} else if ((moveSpacesHor = 0) && (moveSpacesVer < 0)) { //Vertical -
+		for ( int i = 1; i<abs(moveSpacesVer); i++) {
+			if (board[position[0]][position[1] - i] != 153) {
+					free = false;
+				}
+			}
+	} else if ((moveSpacesVer = 0) && (moveSpacesHor > 0)) { //Horizontal +
+		for ( int i = 1; i<moveSpacesHor; i++) {
+			if (board[position[0] + 1][position[1]] != 153) {
+					free = false;
+				}
+			}
+	} else if ((moveSpacesVer = 0) && (moveSpacesHor < 0)) { //Horizontal -
+		for ( int i = 1; i<abs(moveSpacesHor); i++) {
+			if (board[position[0] - 1][position[1]] != 153) {
+				free = false;
+				}
+			}
+	}
+	return free;
 }
 
 /*void Piece::kill(int move[])
