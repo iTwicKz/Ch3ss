@@ -46,11 +46,10 @@ CImg<unsigned char> wpawn(IMAGEPATH "Chess_plt60.png");
 CImg<unsigned char> bpawn(IMAGEPATH "Chess_pdt60.png");
 CImg<unsigned char> dsquare(IMAGEPATH "dsq.png");
 CImg<unsigned char> lsquare(IMAGEPATH "lsq.png");
-CImg<unsigned char> graveyard(500,400,1,3,0);
-	
+CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);	
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
-CImgDisplay graveyard_disp(graveyard,"Graveyard");
+CImgDisplay debug_disp(debugbox,"Debug");
 
 //Boardarray 
 int boardarray[8][8];
@@ -69,7 +68,7 @@ const unsigned char green[] = { 0,255,0 };
 void updateboard()
 {
 	chessboard.display(main_disp);//update board
-	graveyard.display(graveyard_disp);
+	debugbox.display(debug_disp);
 }
 
 int returnpiece(int x, int y)//returns piece at spot on board given
@@ -185,6 +184,7 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 	{
 		//
 	}
+	//The En Passant
 	else
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
 	//determine if square is light or dark
@@ -205,7 +205,12 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 
 void handleclick(int p, int x, int y, bool select)
 {
-	if(select && (lastp != BLANK))//if they select a piece of their color
+	if(lastp == p)
+	{
+		lastp = BLANK;
+		debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
+	}
+	else if(select && (lastp != BLANK))//if they select a piece of their color
 	{
 		//check if valid move
 		CImg<unsigned char> piece;
@@ -234,13 +239,16 @@ void handleclick(int p, int x, int y, bool select)
 		if(lastp == BLACKPAWN)
 			piece = bpawn;
 		//CHECK VALID MOVE FIRST
+		if(true)
 			movedraw(piece,lastx,lasty,x,y);
-		//
+		else
+			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
 	}
 	else
 	{
 		lastx = x;
 		lasty = y;
 		lastp = p;
+		debugbox.fill(0).draw_text(0, 0, "PIECE SELECTED.", green);
 	}
 }
