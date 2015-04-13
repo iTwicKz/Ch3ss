@@ -1,3 +1,3 @@
-OBJS=Piece.o Pawn.o
+OBJS=main.o
 a.out: $(OBJS)
-	g++ -o $@ $(OBJS)
+	g++ -o $@ $(OBJS) -lpthread -lX11
