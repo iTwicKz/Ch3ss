@@ -85,7 +85,7 @@ void setup()
 	for(int i = 0; i < 8; i++)
 		for(int j = 0; j < 8; j++)
 		{
-			boardarray[i][j] = 0;
+			boardarray[i][j] = BLANK;
 			piecearray[i][j].changeType(BLANK);//TODO FIX
 		}
 	//white
@@ -138,20 +138,24 @@ void setup()
 
 void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7
 {	
-	//check for the special moves en passant or castling or queening or double pawn open
+	//check for the special moves en passant or castling or queening
 	//Castling move was checked as valid in handleclick
 	if((piece == bking && srcx+2 == destx) || (piece == wking && srcx+2 == destx))//only time the king can move 2
 	{
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
 		if(piece == wking)//done this way to prevent falsely identified castling
 		{
-			chessboard.draw_image(300, desty*PIXELSQUARESIZE, wrook);
-			chessboard.draw_image(420, desty*PIXELSQUARESIZE, lsquare);
+			chessboard.draw_image(5*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, wrook);
+			chessboard.draw_image(7*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, lsquare);
+			boardarray[5][desty] = boardarray[7][desty];//move piece to new position
+			boardarray[7][desty] = BLANK;//override old one
 		}
 		if(piece == bking)
 		{
-			chessboard.draw_image(300, desty*PIXELSQUARESIZE, brook);
-			chessboard.draw_image(420, desty*PIXELSQUARESIZE, dsquare);
+			chessboard.draw_image(5*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, brook);
+			chessboard.draw_image(7*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, dsquare);
+			boardarray[5][desty] = boardarray[7][desty];//move piece to new position
+			boardarray[7][desty] = BLANK;//override old one
 		}
 	}
 	else if((piece == bking && srcx == destx+2) || (piece == wking && srcx == destx+2))
@@ -159,19 +163,18 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
 		if(piece == wking)//done this way to prevent falsely identified castling
 		{
-			chessboard.draw_image(240, desty*PIXELSQUARESIZE, wrook);
+			chessboard.draw_image(4*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, wrook);
 			chessboard.draw_image(0, desty*PIXELSQUARESIZE, dsquare);
+			boardarray[4][desty] = boardarray[0][desty];//move piece to new position
+			boardarray[0][desty] = BLANK;//override old one
 		}
 		if(piece == bking)
 		{
-			chessboard.draw_image(240, desty*PIXELSQUARESIZE, brook);
+			chessboard.draw_image(4*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, brook);
 			chessboard.draw_image(0, desty*PIXELSQUARESIZE, lsquare);
+			boardarray[4][desty] = boardarray[0][desty];//move piece to new position
+			boardarray[0][desty] = BLANK;//override old one
 		}
-	}
-	//The double pawn opening
-	else if((piece == bpawn || piece == wpawn) && (srcy == || srcy ==) && (desty == ||))
-	{
-		//
 	}
 	//Queening a pawn
 	else if(piece == bpawn && desty == 7)
@@ -197,10 +200,10 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 		
 		updateboard();
 		boardarray[destx][desty] = boardarray[srcx][srcy];//move piece to new position
-		boardarray[srcx][srcx] = BLANK;//override old one
+		boardarray[srcx][srcy] = BLANK;//override old one
 }
 
-void handleclick(int p, int x, int y, bool select)//kinda working
+void handleclick(int p, int x, int y, bool select)
 {
 	if(select && (lastp != BLANK))//if they select a piece of their color
 	{
