@@ -5,7 +5,7 @@
 #define IMAGEPATH "res/"
 #endif
 
-#define BLANK 0
+#define BLANK -1
 #define WHITEKING 1
 #define WHITEQUEEN 2
 #define WHITEKNIGHT 3
