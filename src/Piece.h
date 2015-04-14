@@ -55,6 +55,9 @@ class Piece {
 		//void kill(int move[]);
 		bool collision(int move[], int position[]);
 		void changeType(int t);
+		void setposition(int x, int y);
+		int getX();
+		int getY();
 };
 
 
@@ -182,7 +185,19 @@ void Piece::changeType(int t)
 {
 	this-> type = t;
 }
-
+void Piece::setposition(int x, int y)
+{
+	position[0] = x;
+	position[1] = y;
+}
+int Piece::getX()
+{
+	return(position[0]);
+}
+int Piece::getY()
+{
+	return(position[1]);
+}
 bool Piece::collision(int move[], int position[]) { //Method that returns free as true or false
 	
 	int board[8][8];
