@@ -1,5 +1,5 @@
 #include "CImg.h"
-#include "pieceTest.h"
+#include "Piece.h"
 
 #ifndef IMAGEPATH
 #define IMAGEPATH "res/"
