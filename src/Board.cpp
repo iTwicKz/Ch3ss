@@ -51,9 +51,10 @@ CImgDisplay debug_disp(debugbox,"Debug");
 //Boardarray 
 int boardarray[8][8];
 Piece* pieceArray[32];
-int lastx = 0;
-int lasty = 0;
-int lastp = 0;
+//start outside the board
+int lastx = 9;
+int lasty = 9;
+int lastp = BLANK;
 
 //to write to screen/debug
 const unsigned char green[] = { 0,255,0 };
@@ -67,6 +68,14 @@ void updateBoard()
 }
 int returnPiece(int x, int y)//returns piece at spot on board given
 {
+	/*for(int i = 0; i < 32; i++)
+	{
+		if((x == pieceArray[i]->getX()) && (y == pieceArray[i]->getY()))
+		{
+			return(i);
+		}
+	}
+	return(BLANK);//no spot*/
 	return(boardarray[x][y]);
 }
 
@@ -269,7 +278,7 @@ void handleClick(int p, int x, int y, bool select)
 		if(lastp == BLACKPAWN)
 			piece = bpawn;
 		//CHECK VALID MOVE FIRST
-		if(true)//TAKASHIS MOVEPIECE CLASS TAKES THE DESTINATION XAND Y AND THE PIECE TYPE AND source xy
+		if(true)
 			moveDraw(piece,lastx,lasty,x,y);
 		else
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
