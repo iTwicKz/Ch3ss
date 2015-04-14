@@ -78,7 +78,43 @@ void setup()
 	for(int i = 0; i < 8; i++)
 		for(int j = 0; j < 8; j++)
 			boardarray[i][j] = BLANK;
-	//setup pieces
+	
+	//++++++++++++++++++++++++++++++++++ INITIALIZING PIECE ARRAY ++++++++++++++++++++++++++++++++//
+
+	for(int index = 0; index < 32; index++)	//creating pawns
+	{	
+		if(index < 8)
+			pieceArray[index] = new Pawn(true, index, 6);								//white pawns
+		else if(index < 16)
+			pieceArray[index] = new Pawn(false, index - 7, 1);							//black pawns
+		else if(index < 20)
+		{
+			if(index % 2 == 0)
+				pieceArray[index] = new Bishop(true, (3*((index/2)-7))-1, 7);			//white bishops
+			else
+				pieceArray[index] = new Bishop(false, (3*(((index-1)/2)-7))-1, 0);		//black bishops
+		}
+		else if(index < 24)
+		{
+			if(index % 2 == 0)
+				pieceArray[index] = new Knight(true, (5*((index/2)-10)) + 1 , 7);		//white knight
+			else
+				pieceArray[index] = new Knight(false, (5*(((index-1)/2)-10)) + 1 , 0);	//black knight
+		}
+		else if(index < 28)
+		{
+			if(index % 2 == 0)
+				pieceArray[index] = new Rook(true, (7*((index/2)-12)), 7);			//white knight
+			else
+				pieceArray[index] = new Rook(false, (7*(((index-1)/2)-12)), 0);			//black knight
+		}
+		else if(index == 28) pieceArray[index] = new Queen(true, 3, 7);					//white queen
+		else if(index == 29) pieceArray[index] = new Queen(false, 3, 0);				//black queen
+		else if(index == 30) pieceArray[index] = new King(true, 4, 7);					//white king
+		else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
+	}
+
+	//+++++++++++++++++++++++++++++++++++++++++++ END ++++++++++++++++++++++++++++++++++++++++++++++//
 	
 	//white
 	chessboard.draw_image(0,7*PIXELSQUARESIZE,wrook);
