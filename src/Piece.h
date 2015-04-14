@@ -27,7 +27,7 @@ class Piece {
 		
 
 	public:
-			Piece(){};
+		Piece(){};
 		Piece(bool white, int positionX, int positionY, int type, string sprite){
 			this->type = type;
 			this->sprite = sprite;
@@ -54,10 +54,10 @@ class Piece {
 		bool getDead();
 		//void kill(int move[]);
 		bool collision(int move[], int position[]);
-		void changeType(int t);
-		void setposition(int x, int y);
-		int getX();
-		int getY();
+		bool collisionAttack(int move[]);
+		Piece* pieceArray[32];
+		void setupPieceArray();
+		
 };
 
 
@@ -71,7 +71,7 @@ class Pawn : public Piece{
 			firstMoved = true;
 		};
 		~Pawn(){};
-		int* movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
+		bool movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 		void transformer();			//once across board, option to change
 };
@@ -84,18 +84,17 @@ class Bishop : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Bishop(){};
-		void movePiece();	//checks if the move is allowed and if so, mutates position
+		bool movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
 class Knight : public Piece{
-
 	public:
 		Knight(bool white, int positionX, int positionY, int type = 2, string sprite = "KnightPic") : 
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Knight(){};
-		void movePiece();	//checks if the move is allowed and if so, mutates position
+		bool movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
@@ -110,7 +109,7 @@ class Rook : public Piece{
 			firstMoved = true;
 		};
 		~Rook(){};
-		void movePiece();	//checks if the move is allowed and if so, mutates position
+		bool movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
@@ -121,21 +120,59 @@ class Queen : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Queen(){};
-		void movePiece();	//checks if the move is allowed and if so, mutates position
+		bool movePiece(int x, int y);	//checks if the move is allowed and if so, mutates position
 		int getType();				//returns type of piece
 };
 
 class King : public Piece{
+	private:
+		bool firstMoved; // true = on its first move, false = moved already
 	
 	public:
 		King(bool white, int positionX, int positionY, int type = 5, string sprite = "KingPic") :
 			Piece(white, positionX, positionY, type, sprite){
+				firstMoved = true;
 		};
 		~King(){};
-		void movePiece();
+		bool movePiece(int x, int y);
 		int getType();
 };
 
+void Piece::setupPieceArray()
+{
+	for(int index = 0; index < 32; index++)
+		{	
+			if(index < 8)
+				pieceArray[index] = new Pawn(true, index, 6);								//white pawns
+			else if(index < 16)
+				pieceArray[index] = new Pawn(false, index - 7, 1);							//black pawns
+			else if(index < 20)
+			{
+				if(index % 2 == 0)
+					pieceArray[index] = new Bishop(true, (3*((index/2)-7))-1, 7);			//white bishops
+				else
+					pieceArray[index] = new Bishop(false, (3*(((index-1)/2)-7))-1, 0);		//black bishops
+			}
+			else if(index < 24)
+			{
+				if(index % 2 == 0)
+					pieceArray[index] = new Knight(true, (5*((index/2)-10)) + 1 , 7);		//white knight
+				else
+					pieceArray[index] = new Knight(false, (5*(((index-1)/2)-10)) + 1 , 0);	//black knight
+			}
+			else if(index < 28)
+			{
+				if(index % 2 == 0)
+					pieceArray[index] = new Rook(true, (7*((index/2)-12)), 7);				//white rook
+				else
+					pieceArray[index] = new Rook(false, (7*(((index-1)/2)-12)), 0);			//black rook
+			}
+			else if(index == 28) pieceArray[index] = new Queen(true, 3, 7);					//white queen
+			else if(index == 29) pieceArray[index] = new Queen(false, 3, 0);				//black queen
+			else if(index == 30) pieceArray[index] = new King(true, 4, 7);					//white king
+			else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
+		}
+}
 void Piece::movePiece(){
 	cout<<"";
 };
@@ -180,27 +217,8 @@ bool Piece::getWhite(){
 bool Piece::getDead(){
 	return dead;
 }
-
-void Piece::changeType(int t)
-{
-	this-> type = t;
-}
-void Piece::setposition(int x, int y)
-{
-	position[0] = x;
-	position[1] = y;
-}
-int Piece::getX()
-{
-	return(position[0]);
-}
-int Piece::getY()
-{
-	return(position[1]);
-}
+//----------------------------------------------------------------------------------------------------------------
 bool Piece::collision(int move[], int position[]) { //Method that returns free as true or false
-	
-	int board[8][8];
 	
 	int moveSpacesHor = move[0] - position[0];
 	int moveSpacesVer = move[1] - position[1];
@@ -208,125 +226,126 @@ bool Piece::collision(int move[], int position[]) { //Method that returns free a
 	if (abs(moveSpacesHor) == abs(moveSpacesVer)) { //Checks if diagnol
 		if (moveSpacesHor == moveSpacesVer && moveSpacesHor > 0) {	//diagnol + +
 			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (board[position[0] + i][position[1] + i] != 153) {
+				if (returnPiece(position[0] + i, position[1] + i) != -1) {
 					free = false;
 				}
 			}
 		} else if (moveSpacesHor == moveSpacesVer && moveSpacesHor < 0) { //diagnol - -
 			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (board[position[0] - i][position[1] - i] != 153) {
+				if (returnPiece(position[0] - i, position[1] - i) != -1) {
 					free = false;
 				}
 			}
 		} else if (abs(moveSpacesHor) == moveSpacesVer) { //diagnol - +
 			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (board[position[0] - i][position[1] + i] != 153) {
+				if (returnPiece(position[0] - i, position[1] + i) != -1) {
 					free = false;
 				}
 			}
 		} else if (moveSpacesHor == abs(moveSpacesVer)) { //diagnol + -
 			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (board[position[0] + i][position[1] - i] != 153) {
+				if (returnPiece(position[0] + i, position[1] - i) != -1) {
 					free = false;
 				}
 			}
 		}
 	} else if ((moveSpacesHor = 0) && (moveSpacesVer > 0)) { //Vertical +
 		for ( int i = 1; i<moveSpacesVer; i++) {
-			if (board[position[0]][position[1] + i] != 153) {
+			if (returnPiece(position[0], position[1] + i) != -1) {
 					free = false;
 				}
 			}
 	} else if ((moveSpacesHor = 0) && (moveSpacesVer < 0)) { //Vertical -
 		for ( int i = 1; i<abs(moveSpacesVer); i++) {
-			if (board[position[0]][position[1] - i] != 153) {
+			if (returnPiece(position[0], position[1] - i) != -1) {
 					free = false;
 				}
 			}
 	} else if ((moveSpacesVer = 0) && (moveSpacesHor > 0)) { //Horizontal +
 		for ( int i = 1; i<moveSpacesHor; i++) {
-			if (board[position[0] + 1][position[1]] != 153) {
+			if (returnPiece(position[0] + 1, position[1]) != -1) {
 					free = false;
 				}
 			}
 	} else if ((moveSpacesVer = 0) && (moveSpacesHor < 0)) { //Horizontal -
 		for ( int i = 1; i<abs(moveSpacesHor); i++) {
-			if (board[position[0] - 1][position[1]] != 153) {
+			if (returnPiece(position[0] - 1, position[1]) != -1) {
 				free = false;
 				}
 			}
 	}
 	return free;
 }
-
-/*void Piece::kill(int move[])
+//----------------------------------------------------------------------------------------------------------------
+bool Piece::collisionAttack(int move[]) //Method that returns free as true or false for moved spot
+{
+	bool occupied = false;
+	if (returnPiece(move[0], move[1]) != -1) 
+		occupied = true;
+				
+	return occupied;
+		
+}
+//----------------------------------------------------------------------------------------------------------------
+/*void Piece::kill(int move[]) //FIX
 {
 	addToGraveyard(counterGraveyard, returnpiece(move[0], move[1]);//add to graveyard array
 	counterGraveyard++;
 }*/
-
 //----------------------------------------------------------------------------------------------------------------
-int* Pawn::movePiece(int x, int y){
+bool Pawn::movePiece(int x, int y){ // fix en passant
 
-		int *returnPosition = new int[2];
+	bool valid = false;
+	
+	move[0] = x;
+	move[1] = y;
 
-		int val1 = -1;
-		int val2 = -2;
-		
-		if(white){
-			val1 = abs(val1);
-			val2 = abs(val2);
-		}
+	int val1 = -1;
+	int val2 = -2;
+	
+	if(white){
+		val1 = abs(val1);
+		val2 = abs(val2);
+	}
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
-		if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0]){
-			firstMoved = false;			//marks that the object has moved
-			if(!collision(move, position)){			//if there is NOT an object in its path
+		if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0]){	//marks that the object has moved
+			if(collision(move, position)){			//if there is NOT an object in its path
 				position[0] = move[0];		//occupies space
 				position[1] = move[1];
+				valid = true;
+				firstMoved = false;
 			}
 		}
-		else if(move[1] - position[1] == val1 && position[0] == move[0]){
-			firstMoved = false;			//marks that the object has moved
-			if(!collision(move, position)){		//if there is NOT an object in its path
+		else if(move[1] - position[1] == val1 && position[0] == move[0]){	//marks that the object has moved
+			if(collision(move, position)){		//if there is NOT an object in its path
 				position[0] = move[0];		//occupies space
 				position[1] = move[1];
+				valid = true;
+				firstMoved = false;
 			}
 		}
 		else if(move[1] - position[1] == val1 && abs(move[1] - position[1]) == 1){
-			if(collision(move, position)){		//checks if there IS an object in that space
+			if(collisionAttack(move)){		//checks if there IS an object in that space
 				firstMoved = false;			//marks that the object has moved
+				valid = true;
 				//kill(move);					//kills the opposing object
 				position[0] = move[0];		//occupies the space
 				position[1] = move[1];
 			}
 		}
-		else cout<<"Brahhhhhhhhhhh you can't move dat";
-		
-
-		
-		
-		
+		else cout<<"Brahhhhhhhhhhh you can't move dat";		
 	}
 	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
 
-		int end = 0;			//set opposing board row location for black
-		if(white) end = 7;		//set opposing board row location for white
+	int end = 0;			//set opposing board row location for black
+	if(white) end = 7;		//set opposing board row location for white
 		if(position[1] == end) transformer();
+			//put en passat VW in here
 		
-		//put en passat VW in here
 		
-		
-	returnPosition[0] = move[0];
-	returnPosition[1] = move[1];
-	
-	return returnPosition;
+	return valid;
 		
 }
-
-
-int Pawn::getType(){
-		return type;
-	}
 
 void Pawn::transformer(){
 		bool chosen = false;
@@ -365,93 +384,114 @@ void Pawn::transformer(){
 			else cout << "Sorry. That is not an option. Please choose again" << endl;
 		}
 }
-
 //----------------------------------------------------------------------------------------------------------------
-void Bishop::movePiece(){
+bool Bishop::movePiece(int x, int y){
+
+	bool valid = false;
+	
+	move[0] = x;
+	move[1] = y;
 
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		if(abs(move[0] - position[0]) == abs(move[1] - position[1])){
 			if(collision(move, position)){			//checks if there are any paths in the piece's path
-				if(collision(move, position)){		//checks if there is an object in move destination	
+				if(collisionAttack(move)){		//checks if there is an object in move destination	
 					//kill(move);					//kills opposing piece if so
 				}
 				position[0] = move[0];		//occupies the spot
 				position[1] = move[1];
+				valid = true;
 			}
 		}
 	}
 
 	else cout<<"Brahhhhhhhhhhh you can't move dat";
+	
+	return valid;
+	
 } 
-
-int Bishop::getType(){
-		return type;
-	}
 //----------------------------------------------------------------------------------------------------------------
-void Knight::movePiece(){
+bool Knight::movePiece(int x, int y){
+
+	bool valid = false;
+	
+	move[0] = x;
+	move[1] = y;
 
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		int moveSpaceHor = move[0] - position[0];
 		int moveSpaceVer = move[1] - position[1];
 		
-		if(!collision(move, position)){				//if there is NOT an object in its path
-			if((abs(moveSpaceHor == 1 || moveSpaceHor == 2)) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3){
-				if(collision(move, position)){		//checks if there IS an object in that space
-					//kill(move);					//kills the opposing object
-				}
-					position[0] = move[0];		//occupies the space
-					position[1] = move[1];
-	
+		if((abs(moveSpaceHor == 1 || moveSpaceHor == 2)) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3){
+			if(collisionAttack(move)){		//checks if there IS an object in that space
+				//kill(move);					//kills the opposing object
+			}
+				position[0] = move[0];		//occupies the space
+				position[1] = move[1];
+				valid = true;
+
 			}else{
 				cout << "Invalid movement children";	
 			}
-		}
+		
 	}
 
 	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
+	
+	return valid;
+	
 } 
-
-int Knight::getType(){
-		return type;
-	}
 //----------------------------------------------------------------------------------------------------------------
-void Rook::movePiece() {
+bool Rook::movePiece(int x, int y) {
+	
+	bool valid = false;
+	
+	bool firstMoved = true;
+	
+	move[0] = x;
+	move[1] = y;
 
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		int moveSpacesHor = move[0] - position[0];
 		int moveSpacesVer = move[1] - position[1];
 		
-		if(!collision(move, position)){				//if there is NOT an object in its path
-			if( moveSpacesHor!=0 && move[1] == position[1]) {
-				if(collision(move, position)){
+		if(collision(move, position)){				//if there is NOT an object in its path
+			if(moveSpacesHor!=0 && move[1] == position[1]) {
+				if(collisionAttack(move)){
 					//kill(move);
 				}
 				position[0] = move[0];
 				position[1] = move[1];
 				firstMoved = false;
+				valid = true;
 				
-			} else if( moveSpacesVer !=0 && move[0] == position[0]) {
-				if( collision(move, position) ) {
+			} else if(moveSpacesVer !=0 && move[0] == position[0]) {
+				if(collisionAttack(move)) {
 					//kill(move);
 				}
 				position[0] = move[0];
 				position[1] = move[1];
 				firstMoved = false;
+				valid = true;
 				
 			} else cout<<"Brahhhhhhhhhhh you can't move dat";
+			
 			//Work on castling	
 		}
 	}
 
 	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
-
-}
-
-int Rook::getType(){
-	return type;
+	
+	return valid;
+	
 }
 //----------------------------------------------------------------------------------------------------------------
-void Queen::movePiece() {
+bool Queen::movePiece(int x, int y) {
+
+	bool valid = false;
+	
+	move[0] = x;
+	move[1] = y;
 
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		int moveSpacesHor = move[0] - position[0];
@@ -459,81 +499,117 @@ void Queen::movePiece() {
 		
 		if(collision(move, position)){			//checks if there are any paths in the piece's path
 			if( moveSpacesHor!=0 && move[1] == position[1]) {
-				if(collision(move, position)){		//checks if there is an object in move destination	
+				if(collisionAttack(move)){		//checks if there is an object in move destination	
 					//kill(move);					//kills opposing piece if so
 				}
 					position[0] = move[0];		//occupies the spot
 					position[1] = move[1];
+					
+					valid = true;
 				
-			} else if( moveSpacesVer !=0 && move[0] == position[0]) {
-				if(collision(move, position)){		//checks if there is an object in move destination	
+			} else if(moveSpacesVer !=0 && move[0] == position[0]) {
+				if(collisionAttack(move)){		//checks if there is an object in move destination	
 					//kill(move);					//kills opposing piece if so
 				}
 					position[0] = move[0];		//occupies the spot
 					position[1] = move[1];
+					valid = true;
 				
-			} else if( abs(moveSpacesHor) == abs(moveSpacesVer)) {
-				if(collision(move, position)){		//checks if there is an object in move destination	
+			} else if(abs(moveSpacesHor) == abs(moveSpacesVer)) {
+				if(collisionAttack(move)){		//checks if there is an object in move destination	
 					//kill(move);					//kills opposing piece if so
 				}
 					position[0] = move[0];		//occupies the spot
 					position[1] = move[1];
+					valid = true;
 				
 			} else cout<<"Brahhhhhhhhhhh you can't move dat";
 
 		} else cout<<"There's an object in your path";	
 	}
 	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
-}
-
-int Queen::getType(){
-	return type;
+	
+	return valid;
+	
 }
 //----------------------------------------------------------------------------------------------------------------
-void King::movePiece() {
+bool King::movePiece(int x, int y) { // fix castling w/ rook
+
+	bool valid = false;
+	
+	move[0] = x;
+	move[1] = y;
 
 	if(move[0] != position[0] && move[1] != position[1]) //checks if user has set move to current space
 	{	
-		if(move[0] - position[0] == 0 && abs(move[1]) - abs(position[1]) == 1)
+		if(move[0] - position[0] == 0 && abs(move[1] - position[1]) == 1) //Vertical move
 		{
-			if(collision(move, position))
+			if(collisionAttack(move))
 			{	
-				//kill(move);	
-				position[0] = move[0];		
-				position[1] = move[1];
-				
+				//kill(move);
 			}
+			position[0] = move[0];		
+			position[1] = move[1];
+			valid = true;
+			
 		} 
-		else if(abs(move[0]) - abs(position[0]) == 1 && move[1] - position[1] == 0)
+		else if(abs(move[0] - position[0]) == 1 && move[1] - position[1] == 0) //Horizontal move
 		{
-			if(collision(move, position))
+			if(collisionAttack(move))
 			{	
-				//kill(move);	
-				position[0] = move[0];		
-				position[1] = move[1];
-				
+				//kill(move);
 			}
+			position[0] = move[0];		
+			position[1] = move[1];
+			valid = true;
+			
 		} 
-		else if(abs(move[0]) - abs(position[0]) == 1 && abs(move[1]) - abs(position[1]) == 1)
+		else if(abs(move[0] - position[0]) == 1 && abs(move[1] - position[1]) == 1) //Diagonal Move
 		{
-			if(collision(move, position))
+			if(collisionAttack(move))
 			{	
-				//kill(move);	
-				position[0] = move[0];		
-				position[1] = move[1];
-				
+				//kill(move);
 			}
+			position[0] = move[0];		
+			position[1] = move[1];
+			valid = true;
+			
 		} 
+		else if (abs(move[0] - position[0]) == 2 && firstMoved && move[1]==position[1]) //castle
+		{
+			if(move[0] == 6 && collision(move,position) && !collisionAttack(move)) 
+			{
+				if(isCheck(4,position[1]) && isCheck(5,position[1]) && isCheck(6,position[1])) //castle right
+				{
+					position[0] = move[0];
+					position[1] = move[1];
+					valid = true;
+					//MOVE ROOK?/////////////////////
+					if(white)
+						castle(white, right)
+					else(black)
+						castle(black, right)
+					
+					{
+						
+				}
+			}
+			else if (move[0] = 2 && collision(move,position) && !collisionAttack(move))
+			{
+				if(isCheck(2,position[1]) && isCheck(3,position[1]) && isCheck(4,position[1])) //castle left
+				{
+					position[0] = move[0];
+					position[1] = move[1];
+					valid = true;
+					//MOVE ROOK?///////////////////////////////
+				}
+			}
+		}
 		else cout<<"Brahhhhhhhhhhh you can't move dat";
 	}
 	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
-}
-
-int King::getType(){
-	return type;
+	
+	return valid;
 }
 //----------------------------------------------------------------------------------------------------------------
-
-
-
 
