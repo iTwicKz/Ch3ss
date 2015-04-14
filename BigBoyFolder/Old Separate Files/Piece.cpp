@@ -33,6 +33,7 @@ void Piece::parseMove(string position){		//desired move format = A1 <= desiredMo
 		cout << "You suck. Think about it";
 	}
 		
+		
 }
 
 vector<int> Piece::getPosition(){
@@ -56,5 +57,6 @@ bool Piece::getDead(){
 }
 
 int main(){
-	Piece *pawn1 = new Pawn(true, 0, 0);
+	Pawn pawn1(true, 0, 0, 0, 0);
+	cout << pawn1.getType();
 }

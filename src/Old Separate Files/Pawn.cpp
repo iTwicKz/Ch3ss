@@ -2,13 +2,10 @@
 #include <vector>
 #include <iostream>
 #include <cmath>
-#include "piece.h"
-#include "collision.cpp"
-
+#include "Piece.h"
+#include "Piece.cpp"
 using namespace std;
-int* Pawn::movePiece(int x, int y){
-
-		int *returnPosition = new int[2];
+void Pawn::movePiece(){
 
 		int val1 = -1;
 		int val2 = -2;
@@ -20,49 +17,37 @@ int* Pawn::movePiece(int x, int y){
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0]){
 			firstMoved = false;			//marks that the object has moved
-			if(!collision(move, position)){			//if there is NOT an object in its path
+			if(!collisionPath()){			//if there is NOT an object in its path
 				position[0] = move[0];		//occupies space
 				position[1] = move[1];
 			}
 		}
 		else if(move[1] - position[1] == val1 && position[0] == move[0]){
 			firstMoved = false;			//marks that the object has moved
-			if(!collision(move, position)){		//if there is NOT an object in its path
+			if(!collisionPath()){		//if there is NOT an object in its path
 				position[0] = move[0];		//occupies space
 				position[1] = move[1];
 			}
 		}
 		else if(move[1] - position[1] == val1 && abs(move[1] - position[1]) == 1){
-			if(collision(move, position)){		//checks if there IS an object in that space
+			if(collisionAttack()){		//checks if there IS an object in that space
 				firstMoved = false;			//marks that the object has moved
-				//kill(move);					//kills the opposing object
+				kill(move);					//kills the opposing object
 				position[0] = move[0];		//occupies the space
 				position[1] = move[1];
 			}
 		}
 		else cout<<"Brahhhhhhhhhhh you can't move dat";
-		
 
-		
-		
-		
 	}
 	else cout<<"That is the spot you are currently in";		//Most likely simply ignore
 
 		int end = 0;			//set opposing board row location for black
 		if(white) end = 7;		//set opposing board row location for white
 		if(position[1] == end) transformer();
-		
-		//put en passat VW in here
-		
-		
-	returnPosition[0] = move[0];
-	returnPosition[1] = move[1];
-	
-	return returnPosition;
-		
-}
 
+		//put en passat VW in here
+}
 
 int Pawn::getType(){
 		return type;
