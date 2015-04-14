@@ -88,7 +88,7 @@ void setup()
 		for(int j = 0; j < 8; j++)
 			boardarray[i][j] = BLANK;
 	
-	//++++++++++++++++++++++++++++++++++ INITIALIZING PIECE ARRAY ++++++++++++++++++++++++++++++++//
+	/*++++++++++++++++++++++++++++++++++ INITIALIZING PIECE ARRAY ++++++++++++++++++++++++++++++++//
 
 	for(int index = 0; index < 32; index++)	//creating pawns
 	{	
@@ -123,7 +123,7 @@ void setup()
 		else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
 	}
 
-	//+++++++++++++++++++++++++++++++++++++++++++ END ++++++++++++++++++++++++++++++++++++++++++++++//
+	//+++++++++++++++++++++++++++++++++++++++++++ END ++++++++++++++++++++++++++++++++++++++++++++++*/
 	
 	//white
 	chessboard.draw_image(0,7*PIXELSQUARESIZE,wrook);
