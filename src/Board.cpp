@@ -1,31 +1,28 @@
 #include "CImg.h"
 #include "pieceTest.h"
-#include "pawnTest.cpp"
 
 #ifndef IMAGEPATH
 #define IMAGEPATH "res/"
 #endif
 
-#define BLANK 10
-#define WHITEKING 11
-#define WHITEQUEEN 12
-#define WHITEKNIGHT 13
-#define WHITEBISHOP 14
-#define WHITEROOK 15
-#define WHITEPAWN 16
-#define BLACKKING 17
-#define BLACKQUEEN 18
-#define BLACKKNIGHT 19
-#define BLACKBISHOP 20
-#define BLACKROOK 21
-#define BLACKPAWN 22
+#define BLANK 0
+#define WHITEKING 1
+#define WHITEQUEEN 2
+#define WHITEKNIGHT 3
+#define WHITEBISHOP 4
+#define WHITEROOK 5
+#define WHITEPAWN 6
+#define BLACKKING 7
+#define BLACKQUEEN 8
+#define BLACKKNIGHT 9
+#define BLACKBISHOP 10
+#define BLACKROOK 11
+#define BLACKPAWN 12
+//0-7 white pawns
+//8-15 black pawns
+//16,18 white bishops
+//17,19 black bishops
 
-#define PAWN 0
-#define BISHOP 1
-#define KNIGHT 2
-#define ROOK 3
-#define QUEEN 4
-#define KING 5
 #define PIXELSQUARESIZE 60
 
 using namespace cimg_library;
@@ -46,18 +43,16 @@ CImg<unsigned char> wpawn(IMAGEPATH "Chess_plt60.png");
 CImg<unsigned char> bpawn(IMAGEPATH "Chess_pdt60.png");
 CImg<unsigned char> dsquare(IMAGEPATH "dsq.png");
 CImg<unsigned char> lsquare(IMAGEPATH "lsq.png");
-CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);	
+CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
 CImgDisplay debug_disp(debugbox,"Debug");
 
 //Boardarray 
 int boardarray[8][8];
-Piece piecearray[8][8];
-
-//last coordinates start outside board
-int lastx = 9;
-int lasty = 9;
+Piece* pieceArray[32];
+int lastx = 0;
+int lasty = 0;
 int lastp = 0;
 
 //to write to screen/debug
@@ -65,28 +60,26 @@ const unsigned char green[] = { 0,255,0 };
 
 
 //Board Methods
-void updateboard()
+void updateBoard()
 {
 	chessboard.display(main_disp);//update board
 	debugbox.display(debug_disp);
 }
-
-int returnpiece(int x, int y)//returns piece at spot on board given
+int returnPiece(int x, int y)//returns piece at spot on board given
 {
 	return(boardarray[x][y]);
-	//return piecearray[x][y].getType();
 }
 
 void setup()
 {
 	
 	//setup board
+	//for painting
 	for(int i = 0; i < 8; i++)
 		for(int j = 0; j < 8; j++)
-		{
 			boardarray[i][j] = BLANK;
-			piecearray[i][j].changeType(BLANK);//TODO FIX
-		}
+	//setup pieces
+	
 	//white
 	chessboard.draw_image(0,7*PIXELSQUARESIZE,wrook);
 	boardarray[0][7] = WHITEROOK;
@@ -132,11 +125,11 @@ void setup()
 		chessboard.draw_image(i*PIXELSQUARESIZE,60,bpawn);
 		boardarray[i][1] = BLACKPAWN;
 	}
-	updateboard();
+	updateBoard();
 }
 
-void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7
-{	
+void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7
+{
 	//check for the special moves en passant or castling or queening
 	//Castling move was checked as valid in handleclick
 	if((piece == bking && srcx+2 == destx) || (piece == wking && srcx+2 == destx))//only time the king can move 2
@@ -185,6 +178,7 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 		//
 	}
 	//The En Passant
+	//else if(){}
 	else
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
 	//determine if square is light or dark
@@ -198,12 +192,12 @@ void movedraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 			chessboard.draw_image(srcx*PIXELSQUARESIZE,srcy*PIXELSQUARESIZE,lsquare);
 		
 		
-		updateboard();
+		updateBoard();
 		boardarray[destx][desty] = boardarray[srcx][srcy];//move piece to new position
 		boardarray[srcx][srcy] = BLANK;//override old one
 }
 
-void handleclick(int p, int x, int y, bool select)
+void handleClick(int p, int x, int y, bool select)
 {
 	if(lastp == p)
 	{
@@ -239,8 +233,8 @@ void handleclick(int p, int x, int y, bool select)
 		if(lastp == BLACKPAWN)
 			piece = bpawn;
 		//CHECK VALID MOVE FIRST
-		if(true)
-			movedraw(piece,lastx,lasty,x,y);
+		if(true)//TAKASHIS MOVEPIECE CLASS TAKES THE DESTINATION XAND Y AND THE PIECE TYPE AND source xy
+			moveDraw(piece,lastx,lasty,x,y);
 		else
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
 	}
