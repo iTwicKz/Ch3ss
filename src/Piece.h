@@ -12,13 +12,13 @@ using namespace std;
 
 class Piece {
 	protected:
-		int type;					//Queen, King, 	etc.
+		const int type;					//Queen, King, 	etc.
 		//vector<int>move;			//Location
 		//vector<int>position;		//Position in 2D Array Gameboard
 		int move[2];
 		int position[2];
 		string sprite;				//Image file link
-		bool white;					//black or white
+		const bool white;					//black or white
 		bool dead;					//on board or not
 		//virtual void movePiece() const;
 		int blackScore;
@@ -28,14 +28,14 @@ class Piece {
 
 	public:
 		Piece(){};
-		Piece(bool white, int positionX, int positionY, int type, string sprite){
-			this->type = type;
+		Piece(bool white, int positionX, int positionY, int type, string sprite):white(white),type(type){
+			//this->type = type;
 			this->sprite = sprite;
 			//move.push_back(0);
 			//move.push_back(0);
 			move[0] = 0;
 			move[1] = 0;
-			this->white = white;
+			//this->white = white;
 			//position.push_back(positionX);
 			//position.push_back(positionY); 
 			position[0] = positionX;
