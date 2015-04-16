@@ -6,19 +6,20 @@
 #include <string>
 #include <iostream>
 #include <cmath>
-
+int passantCount = 0;
+int passantPiece[2];
 
 using namespace std;
 
 class Piece {
 	protected:
-		const int type;					//Queen, King, 	etc.
+		int type;					//Queen, King, 	etc.
 		//vector<int>move;			//Location
 		//vector<int>position;		//Position in 2D Array Gameboard
 		int move[2];
 		int position[2];
 		string sprite;				//Image file link
-		const bool white;					//black or white
+		bool white;					//black or white
 		bool dead;					//on board or not
 		//virtual void movePiece() const;
 		int blackScore;
@@ -28,14 +29,14 @@ class Piece {
 
 	public:
 		Piece(){};
-		Piece(bool white, int positionX, int positionY, int type, string sprite):white(white),type(type){
-			//this->type = type;
+		Piece(bool white, int positionX, int positionY, int type, string sprite){
+			this->type = type;
 			this->sprite = sprite;
 			//move.push_back(0);
 			//move.push_back(0);
 			move[0] = 0;
 			move[1] = 0;
-			//this->white = white;
+			this->white = white;
 			//position.push_back(positionX);
 			//position.push_back(positionY); 
 			position[0] = positionX;
@@ -64,6 +65,7 @@ class Piece {
 class Pawn : public Piece{
 	private:
 		bool firstMoved;			//checks if pawn has been moved for two move rule
+		
 
 	public:
 		Pawn(bool white, int positionX, int positionY, int type = 0, string sprite = "PawnPic") : 
@@ -296,6 +298,7 @@ bool Piece::collisionAttack(int move[]) //Method that returns free as true or fa
 bool Pawn::movePiece(int x, int y){ // fix en passant
 
 	bool valid = false;
+	int moveCount = getMoveCount(); //90, 91, 
 	
 	move[0] = x;
 	move[1] = y;
@@ -307,6 +310,9 @@ bool Pawn::movePiece(int x, int y){ // fix en passant
 		val1 = abs(val1);
 		val2 = abs(val2);
 	}
+	
+	
+	
 	if(move[0] != position[0] && move[1] != position[1]){	//checks if user has set move to current space
 		if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0]){	//marks that the object has moved
 			if(collision(move, position)){			//if there is NOT an object in its path
@@ -314,6 +320,10 @@ bool Pawn::movePiece(int x, int y){ // fix en passant
 				position[1] = move[1];
 				valid = true;
 				firstMoved = false;
+				passantCount = moveCount+1;
+				passantPiece[0] = move[0];
+				passantPiece[1] = move[1];
+				
 			}
 		}
 		else if(move[1] - position[1] == val1 && position[0] == move[0]){	//marks that the object has moved
@@ -328,9 +338,19 @@ bool Pawn::movePiece(int x, int y){ // fix en passant
 			if(collisionAttack(move)){		//checks if there IS an object in that space
 				firstMoved = false;			//marks that the object has moved
 				valid = true;
-				//kill(move);					//kills the opposing object
+				//KILL(MOVE);					//kills the opposing object NEEDS TO BE DONE ulaksdghfjklashdlfjkaghsdljkfaghsdf
 				position[0] = move[0];		//occupies the space
 				position[1] = move[1];
+			} else if (passantCount = moveCount)
+			{
+				if(collisionAttack(passantPiece))
+				{
+					position[0] = move[0];		//occupies the space
+					position[1] = move[1];
+					kill(passantPiece);
+					valid = true;
+					firstMoved = false;
+				}
 			}
 		}
 		else cout<<"Brahhhhhhhhhhh you can't move dat";		
@@ -339,15 +359,19 @@ bool Pawn::movePiece(int x, int y){ // fix en passant
 
 	int end = 0;			//set opposing board row location for black
 	if(white) end = 7;		//set opposing board row location for white
-		if(position[1] == end) transformer();
-			//put en passat VW in here
+		if(position[1] == end)
+		{
+			transformer();
+			valid = true;
+			firstMoved = false;
+		}
 		
 		
 	return valid;
 		
 }
 
-void Pawn::transformer(){
+void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
 		bool chosen = false;
 		while (!chosen){
 			string option;
@@ -533,7 +557,7 @@ bool Queen::movePiece(int x, int y) {
 	
 }
 //----------------------------------------------------------------------------------------------------------------
-bool King::movePiece(int x, int y) { // fix castling w/ rook
+bool King::movePiece(int x, int y) {
 
 	bool valid = false;
 	
@@ -584,13 +608,10 @@ bool King::movePiece(int x, int y) { // fix castling w/ rook
 					position[0] = move[0];
 					position[1] = move[1];
 					valid = true;
-					//MOVE ROOK?/////////////////////
 					if(white)
 						castle(white, right)
 					else(black)
 						castle(black, right)
-					
-					{
 						
 				}
 			}
@@ -601,7 +622,6 @@ bool King::movePiece(int x, int y) { // fix castling w/ rook
 					position[0] = move[0];
 					position[1] = move[1];
 					valid = true;
-					//MOVE ROOK?///////////////////////////////
 				}
 			}
 		}
