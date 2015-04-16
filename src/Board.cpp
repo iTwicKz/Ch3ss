@@ -1,8 +1,8 @@
 #include "CImg.h"
-#include "Piece.h"
+//#include "Piece.h"
 
 #ifndef IMAGEPATH
-#define IMAGEPATH "res/"
+#define IMAGEPATH "res/Default"
 #endif
 
 #define BLANK -1
@@ -23,13 +23,42 @@
 //16,18 white bishops
 //17,19 black bishops
 
-#define PIXELSQUARESIZE 60
+#define PIXELSQUARESIZE 100
+//#define XPADDING 10
+//#define YPADDING 10
 
 using namespace cimg_library;
 
 //each piece is 60px by 60px chessboard is 480px by 480px or 60px * 8
 CImg<unsigned char> chessboard(IMAGEPATH "chessboard.png");
-CImg<unsigned char> wking(IMAGEPATH "Chess_klt60.png");
+
+CImg<unsigned char> wlking(IMAGEPATH "King-White-Light.jpg");
+CImg<unsigned char> wdking(IMAGEPATH "King-White-Dark.jpg");
+CImg<unsigned char> wlqueen(IMAGEPATH "Queen-White-Light.jpg");
+CImg<unsigned char> wdqueen(IMAGEPATH "Queen-White-Dark.jpg");
+CImg<unsigned char> wlknight(IMAGEPATH "Knight-White-Light.jpg");
+CImg<unsigned char> wdknight(IMAGEPATH "Knight-White-Dark.jpg");
+CImg<unsigned char> wlbishop(IMAGEPATH "Bishop-White-Light.jpg");
+CImg<unsigned char> wdbishop(IMAGEPATH "Bishop-White-Dark.jpg");
+CImg<unsigned char> wlrook(IMAGEPATH "Rook-White-Light.jpg");
+CImg<unsigned char> wdrook(IMAGEPATH "Rook-White-Dark.jpg");
+CImg<unsigned char> wlpawn(IMAGEPATH "Pawn-White-Light.jpg");
+CImg<unsigned char> wdpawn(IMAGEPATH "Pawn-White-Dark.jpg");
+CImg<unsigned char> blking(IMAGEPATH "King-Black-Light.jpg");
+CImg<unsigned char> bdking(IMAGEPATH "King-Black-Dark.jpg");
+CImg<unsigned char> blqueen(IMAGEPATH "Queen-Black-Light.jpg");
+CImg<unsigned char> bdqueen(IMAGEPATH "Queen-Black-Dark.jpg");
+CImg<unsigned char> blknight(IMAGEPATH "Knight-Black-Light.jpg");
+CImg<unsigned char> bdknight(IMAGEPATH "Knight-Black-Dark.jpg");
+CImg<unsigned char> blbishop(IMAGEPATH "Bishop-Black-Light.jpg");
+CImg<unsigned char> bdbishop(IMAGEPATH "Bishop-Black-Dark.jpg");
+CImg<unsigned char> blrook(IMAGEPATH "Rook-Black-Light.jpg");
+CImg<unsigned char> bdrook(IMAGEPATH "Rook-Black-Dark.jpg");
+CImg<unsigned char> blpawn(IMAGEPATH "Pawn-Black-Light.jpg");
+CImg<unsigned char> bdpawn(IMAGEPATH "Pawn-Black-Dark.jpg");
+CImg<unsigned char> lblank(IMAGEPATH "Blank-Light.jpg");
+CImg<unsigned char> dblank(IMAGEPATH "Blank-Dark.jpg");
+/*CImg<unsigned char> wking(IMAGEPATH "Chess_klt60.png");
 CImg<unsigned char> bking(IMAGEPATH "Chess_kdt60.png");
 CImg<unsigned char> wqueen(IMAGEPATH "Chess_qlt60.png");
 CImg<unsigned char> bqueen(IMAGEPATH "Chess_qdt60.png");
@@ -42,7 +71,7 @@ CImg<unsigned char> brook(IMAGEPATH "Chess_rdt60.png");
 CImg<unsigned char> wpawn(IMAGEPATH "Chess_plt60.png");
 CImg<unsigned char> bpawn(IMAGEPATH "Chess_pdt60.png");
 CImg<unsigned char> dsquare(IMAGEPATH "dsq.png");
-CImg<unsigned char> lsquare(IMAGEPATH "lsq.png");
+CImg<unsigned char> lsquare(IMAGEPATH "lsq.png");*/
 CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
@@ -50,12 +79,14 @@ CImgDisplay debug_disp(debugbox,"Debug");
 
 //Boardarray 
 int boardarray[8][8];
-Piece* pieceArray[32];
+//Piece* pieceArray[32];
 //start outside the board
 int lastx = 9;
 int lasty = 9;
 int lastp = BLANK;
 
+//counter
+int movecount = 0;
 //to write to screen/debug
 const unsigned char green[] = { 0,255,0 };
 
@@ -66,6 +97,7 @@ void updateBoard()
 	chessboard.display(main_disp);//update board
 	debugbox.display(debug_disp);
 }
+
 int returnPiece(int x, int y)//returns piece at spot on board given
 {
 	/*for(int i = 0; i < 32; i++)
@@ -77,6 +109,11 @@ int returnPiece(int x, int y)//returns piece at spot on board given
 	}
 	return(BLANK);//no spot*/
 	return(boardarray[x][y]);
+}
+
+int getMoveCount()
+{
+	return movecount;
 }
 
 void setup()
@@ -173,52 +210,129 @@ void setup()
 	updateBoard();
 }
 
-void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7
+CImg<unsigned char> parseDraw(int xx, int yy, int pp)//draw light pieces on light squares, dark pieces on dark squares
 {
+	bool color = true; //true is light, false is dark
+	//determine if square is light or dark
+	if(xx%2 == 0 && yy%2 == 0)
+		color = true;
+	else if(xx%2 == 0 && yy != 0)
+		color = false;
+	else if(xx%2 != 0 && yy%2 == 0)
+		color = false;
+	else if(xx%2 != 0 && yy%2 != 0)
+		color = true;
+		
+	//assign image to variables
+	CImg<unsigned char> piece;
+	if(color)
+	{
+		if(pp == WHITEKING)
+		piece = wlking;
+		if(pp == WHITEQUEEN)
+		piece = wlqueen;
+		if(pp == WHITEKNIGHT)
+		piece = wlknight;
+		if(pp == WHITEBISHOP)
+		piece = wlbishop;
+		if(pp == WHITEROOK)
+		piece = wlrook;
+		if(pp == WHITEPAWN)
+		piece = wlpawn;
+		if(pp == BLACKKING)
+		piece = blking;
+		if(pp == BLACKQUEEN)
+		piece = blqueen;
+		if(pp == BLACKKNIGHT)
+		piece = blknight;
+		if(pp == BLACKBISHOP)
+		piece = blbishop;
+		if(pp == BLACKROOK)
+		piece = blrook;
+		if(pp == BLACKPAWN)
+		piece = blpawn;
+		if(pp == BLANK)
+		piece = lblank;
+	}
+	else
+	{
+		if(pp == WHITEKING)
+		piece = wdking;
+		if(pp == WHITEQUEEN)
+		piece = wdqueen;
+		if(pp == WHITEKNIGHT)
+		piece = wdknight;
+		if(pp == WHITEBISHOP)
+		piece = wdbishop;
+		if(pp == WHITEROOK)
+		piece = wdrook;
+		if(pp == WHITEPAWN)
+		piece = wdpawn;
+		if(pp == BLACKKING)
+		piece = bdking;
+		if(pp == BLACKQUEEN)
+		piece = bdqueen;
+		if(pp == BLACKKNIGHT)
+		piece = bdknight;
+		if(pp == BLACKBISHOP)
+		piece = bdbishop;
+		if(pp == BLACKROOK)
+		piece = bdrook;
+		if(pp == BLACKPAWN)
+		piece = bdpawn;
+		if(pp == BLANK)
+		piece = dblank;
+	}
+	return(piece);
+}
+
+void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7 only call if your move is valid you dummy
+{
+	movecount++;
 	//check for the special moves en passant or castling or queening
 	//Castling move was checked as valid in handleclick
-	if((piece == bking && srcx+2 == destx) || (piece == wking && srcx+2 == destx))//only time the king can move 2
+	if((piece == blking && srcx+2 == destx) || (piece == wlking && srcx+2 == destx) || (piece == bdking && srcx+2 == destx) || (piece == wdking && srcx+2 == destx))//only time the king can move 2
 	{
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
-		if(piece == wking)//done this way to prevent falsely identified castling
+		if(piece == wlking || piece == wdking)//done this way to prevent falsely identified castling
 		{
-			chessboard.draw_image(5*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, wrook);
-			chessboard.draw_image(7*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, lsquare);
+			chessboard.draw_image(5*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, parseDraw(5,desty,BLACKROOK));
+			chessboard.draw_image(7*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, lblank);
 			boardarray[5][desty] = boardarray[7][desty];//move piece to new position
 			boardarray[7][desty] = BLANK;//override old one
 		}
-		if(piece == bking)
+		if(piece == blking || piece == bdking)
 		{
-			chessboard.draw_image(5*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, brook);
-			chessboard.draw_image(7*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, dsquare);
+			chessboard.draw_image(5*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, parseDraw(5,desty,BLACKROOK));
+			chessboard.draw_image(7*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, dblank);
 			boardarray[5][desty] = boardarray[7][desty];//move piece to new position
 			boardarray[7][desty] = BLANK;//override old one
 		}
 	}
-	else if((piece == bking && srcx == destx+2) || (piece == wking && srcx == destx+2))
+	else if((piece == blking && srcx == destx+2) || (piece == wlking && srcx == destx+2)(piece == bdking && srcx == destx+2) || (piece == wdking && srcx == destx+2))
 	{
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
-		if(piece == wking)//done this way to prevent falsely identified castling
+		if(piece == wlking || piece == wdking)//done this way to prevent falsely identified castling
 		{
-			chessboard.draw_image(4*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, wrook);
-			chessboard.draw_image(0, desty*PIXELSQUARESIZE, dsquare);
+			chessboard.draw_image(4*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, parseDraw(4,desty,WHITEROOK));
+			chessboard.draw_image(0, desty*PIXELSQUARESIZE, dblank);
 			boardarray[4][desty] = boardarray[0][desty];//move piece to new position
 			boardarray[0][desty] = BLANK;//override old one
 		}
-		if(piece == bking)
+		if(piece == blking || piece == bdking)
 		{
-			chessboard.draw_image(4*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, brook);
-			chessboard.draw_image(0, desty*PIXELSQUARESIZE, lsquare);
+			chessboard.draw_image(4*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, parseDraw(4,desty,BLACKROOK));
+			chessboard.draw_image(0, desty*PIXELSQUARESIZE, lblank);
 			boardarray[4][desty] = boardarray[0][desty];//move piece to new position
 			boardarray[0][desty] = BLANK;//override old one
 		}
 	}
 	//Queening a pawn
-	else if(piece == bpawn && desty == 7)
+	else if((piece == blpawn && desty == 7) || (piece == bdpawn && desty == 0))
 	{
 		//
 	}
-	else if(piece == wpawn && desty == 0)
+	else if((piece == wlpawn && desty == 0) || (piece == wdpawn && desty == 0))
 	{
 		//
 	}
@@ -226,20 +340,12 @@ void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 	//else if(){}
 	else
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
-	//determine if square is light or dark
-		if(srcx%2 == 0 && srcy%2 == 0)
-			chessboard.draw_image(srcx*PIXELSQUARESIZE,srcy*PIXELSQUARESIZE,lsquare);
-		else if(srcx%2 == 0 && srcy != 0)
-			chessboard.draw_image(srcx*PIXELSQUARESIZE,srcy*PIXELSQUARESIZE,dsquare);
-		else if(srcx%2 != 0 && srcy%2 == 0)
-			chessboard.draw_image(srcx*PIXELSQUARESIZE,srcy*PIXELSQUARESIZE,dsquare);
-		else if(srcx%2 != 0 && srcy%2 != 0)
-			chessboard.draw_image(srcx*PIXELSQUARESIZE,srcy*PIXELSQUARESIZE,lsquare);
+	
+	chessboard.draw_image(srcx*PIXELSQUARESIZE, srcy*PIXELSQUARESIZE,parseDraw(srcx,srcy,BLANK));
 		
-		
-		updateBoard();
-		boardarray[destx][desty] = boardarray[srcx][srcy];//move piece to new position
-		boardarray[srcx][srcy] = BLANK;//override old one
+	updateBoard();
+	boardarray[destx][desty] = boardarray[srcx][srcy];//move piece to new position
+	boardarray[srcx][srcy] = BLANK;//override old one
 }
 
 void handleClick(int p, int x, int y, bool select)
@@ -251,35 +357,11 @@ void handleClick(int p, int x, int y, bool select)
 	}
 	else if(select && (lastp != BLANK))//if they select a piece of their color
 	{
-		//check if valid move
-		CImg<unsigned char> piece;
-		if(lastp == WHITEKING)
-			piece = wking;
-		if(lastp == WHITEQUEEN)
-			piece = wqueen;
-		if(lastp == WHITEKNIGHT)
-			piece = wknight;
-		if(lastp == WHITEBISHOP)
-			piece = wbishop;
-		if(lastp == WHITEROOK)
-			piece = wrook;
-		if(lastp == WHITEPAWN)
-			piece = wpawn;
-		if(lastp == BLACKKING)
-			piece = bking;
-		if(lastp == BLACKQUEEN)
-			piece = bqueen;
-		if(lastp == BLACKKNIGHT)
-			piece = bknight;
-		if(lastp == BLACKBISHOP)
-			piece = bbishop;
-		if(lastp == BLACKROOK)
-			piece = brook;
-		if(lastp == BLACKPAWN)
-			piece = bpawn;
+		//check what piece to draw
+		CImg<unsigned char> piecetodraw = parseDraw(x,y,p);
 		//CHECK VALID MOVE FIRST
 		if(true)
-			moveDraw(piece,lastx,lasty,x,y);
+			moveDraw(piecetodraw,lastx,lasty,x,y);
 		else
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
 	}
