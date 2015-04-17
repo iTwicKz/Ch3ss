@@ -2,7 +2,7 @@
 //#include "Piece.h"
 
 #ifndef IMAGEPATH
-#define IMAGEPATH "res/Default"
+#define IMAGEPATH "res/Default/"
 #endif
 
 #define BLANK -1
@@ -116,100 +116,6 @@ int getMoveCount()
 	return movecount;
 }
 
-void setup()
-{
-	
-	//setup board
-	//for painting
-	for(int i = 0; i < 8; i++)
-		for(int j = 0; j < 8; j++)
-			boardarray[i][j] = BLANK;
-	
-	/*++++++++++++++++++++++++++++++++++ INITIALIZING PIECE ARRAY ++++++++++++++++++++++++++++++++//
-
-	for(int index = 0; index < 32; index++)	//creating pawns
-	{	
-		if(index < 8)
-			pieceArray[index] = new Pawn(true, index, 6);								//white pawns
-		else if(index < 16)
-			pieceArray[index] = new Pawn(false, index - 7, 1);							//black pawns
-		else if(index < 20)
-		{
-			if(index % 2 == 0)
-				pieceArray[index] = new Bishop(true, (3*((index/2)-7))-1, 7);			//white bishops
-			else
-				pieceArray[index] = new Bishop(false, (3*(((index-1)/2)-7))-1, 0);		//black bishops
-		}
-		else if(index < 24)
-		{
-			if(index % 2 == 0)
-				pieceArray[index] = new Knight(true, (5*((index/2)-10)) + 1 , 7);		//white knight
-			else
-				pieceArray[index] = new Knight(false, (5*(((index-1)/2)-10)) + 1 , 0);	//black knight
-		}
-		else if(index < 28)
-		{
-			if(index % 2 == 0)
-				pieceArray[index] = new Rook(true, (7*((index/2)-12)), 7);			//white knight
-			else
-				pieceArray[index] = new Rook(false, (7*(((index-1)/2)-12)), 0);			//black knight
-		}
-		else if(index == 28) pieceArray[index] = new Queen(true, 3, 7);					//white queen
-		else if(index == 29) pieceArray[index] = new Queen(false, 3, 0);				//black queen
-		else if(index == 30) pieceArray[index] = new King(true, 4, 7);					//white king
-		else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
-	}
-
-	//+++++++++++++++++++++++++++++++++++++++++++ END ++++++++++++++++++++++++++++++++++++++++++++++*/
-	
-	//white
-	chessboard.draw_image(0,7*PIXELSQUARESIZE,wrook);
-	boardarray[0][7] = WHITEROOK;
-	chessboard.draw_image(1*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wknight);
-	boardarray[1][7] = WHITEKNIGHT;
-	chessboard.draw_image(2*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wbishop);
-	boardarray[2][7] = WHITEBISHOP;
-	chessboard.draw_image(3*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wqueen);
-	boardarray[3][7] = WHITEQUEEN;
-	chessboard.draw_image(4*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wking);
-	boardarray[4][7] = WHITEKING;
-	chessboard.draw_image(5*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wbishop);
-	boardarray[5][7] = WHITEBISHOP;
-	chessboard.draw_image(6*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wknight);
-	boardarray[6][7] = WHITEKNIGHT;
-	chessboard.draw_image(7*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wrook);
-	boardarray[7][7] = WHITEROOK;
-	for(int i = 0; i <=7; i++)
-	{
-		chessboard.draw_image(i*PIXELSQUARESIZE,6*PIXELSQUARESIZE,wpawn);
-		boardarray[i][6] = WHITEPAWN;
-	}
-		
-	//black
-	chessboard.draw_image(0,0,brook);
-	boardarray[0][0] = BLACKROOK;
-	chessboard.draw_image(1*PIXELSQUARESIZE,0,bknight);
-	boardarray[1][0] = BLACKKNIGHT;
-	chessboard.draw_image(2*PIXELSQUARESIZE,0,bbishop);
-	boardarray[2][0] = BLACKBISHOP;
-	chessboard.draw_image(3*PIXELSQUARESIZE,0,bqueen);
-	boardarray[3][0] = BLACKQUEEN;
-	chessboard.draw_image(4*PIXELSQUARESIZE,0,bking);
-	boardarray[4][0] = BLACKKING;
-	chessboard.draw_image(5*PIXELSQUARESIZE,0,bbishop);
-	boardarray[5][0] = BLACKBISHOP;
-	chessboard.draw_image(6*PIXELSQUARESIZE,0,bknight);
-	boardarray[6][0] = BLACKKNIGHT;
-	chessboard.draw_image(7*PIXELSQUARESIZE,0,brook);
-	boardarray[7][0] = BLACKROOK;
-	for(int i = 0; i <=7; i++)
-	{
-		chessboard.draw_image(i*PIXELSQUARESIZE,60,bpawn);
-		boardarray[i][1] = BLACKPAWN;
-	}
-	updateBoard();
-}
-
 CImg<unsigned char> parseDraw(int xx, int yy, int pp)//draw light pieces on light squares, dark pieces on dark squares
 {
 	bool color = true; //true is light, false is dark
@@ -286,6 +192,101 @@ CImg<unsigned char> parseDraw(int xx, int yy, int pp)//draw light pieces on ligh
 	return(piece);
 }
 
+void setup()
+{
+	
+	//setup board
+	//for painting
+	for(int i = 0; i < 8; i++)
+		for(int j = 0; j < 8; j++)
+			boardarray[i][j] = BLANK;
+	
+	/*++++++++++++++++++++++++++++++++++ INITIALIZING PIECE ARRAY ++++++++++++++++++++++++++++++++//
+
+	for(int index = 0; index < 32; index++)	//creating pawns
+	{	
+		if(index < 8)
+			pieceArray[index] = new Pawn(true, index, 6);								//white pawns
+		else if(index < 16)
+			pieceArray[index] = new Pawn(false, index - 7, 1);							//black pawns
+		else if(index < 20)
+		{
+			if(index % 2 == 0)
+				pieceArray[index] = new Bishop(true, (3*((index/2)-7))-1, 7);			//white bishops
+			else
+				pieceArray[index] = new Bishop(false, (3*(((index-1)/2)-7))-1, 0);		//black bishops
+		}
+		else if(index < 24)
+		{
+			if(index % 2 == 0)
+				pieceArray[index] = new Knight(true, (5*((index/2)-10)) + 1 , 7);		//white knight
+			else
+				pieceArray[index] = new Knight(false, (5*(((index-1)/2)-10)) + 1 , 0);	//black knight
+		}
+		else if(index < 28)
+		{
+			if(index % 2 == 0)
+				pieceArray[index] = new Rook(true, (7*((index/2)-12)), 7);			//white knight
+			else
+				pieceArray[index] = new Rook(false, (7*(((index-1)/2)-12)), 0);			//black knight
+		}
+		else if(index == 28) pieceArray[index] = new Queen(true, 3, 7);					//white queen
+		else if(index == 29) pieceArray[index] = new Queen(false, 3, 0);				//black queen
+		else if(index == 30) pieceArray[index] = new King(true, 4, 7);					//white king
+		else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
+	}
+
+	//+++++++++++++++++++++++++++++++++++++++++++ END ++++++++++++++++++++++++++++++++++++++++++++++*/
+	
+	//white
+	chessboard.draw_image(0,7*PIXELSQUARESIZE,wdrook);
+	boardarray[0][7] = WHITEROOK;
+	chessboard.draw_image(1*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlknight);
+	boardarray[1][7] = WHITEKNIGHT;
+	chessboard.draw_image(2*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wdbishop);
+	boardarray[2][7] = WHITEBISHOP;
+	chessboard.draw_image(3*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlqueen);
+	boardarray[3][7] = WHITEQUEEN;
+	chessboard.draw_image(4*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wdking);
+	boardarray[4][7] = WHITEKING;
+	chessboard.draw_image(5*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlbishop);
+	boardarray[5][7] = WHITEBISHOP;
+	chessboard.draw_image(6*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wdknight);
+	boardarray[6][7] = WHITEKNIGHT;
+	chessboard.draw_image(7*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlrook);
+	boardarray[7][7] = WHITEROOK;
+	for(int i = 0; i <=7; i++)
+	{
+		chessboard.draw_image(i*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(i,6,WHITEPAWN));
+		boardarray[i][6] = WHITEPAWN;
+	}
+		
+	//black
+	chessboard.draw_image(0,0,blrook);
+	boardarray[0][0] = BLACKROOK;
+	chessboard.draw_image(1*PIXELSQUARESIZE,0,bdknight);
+	boardarray[1][0] = BLACKKNIGHT;
+	chessboard.draw_image(2*PIXELSQUARESIZE,0,blbishop);
+	boardarray[2][0] = BLACKBISHOP;
+	chessboard.draw_image(3*PIXELSQUARESIZE,0,bdqueen);
+	boardarray[3][0] = BLACKQUEEN;
+	chessboard.draw_image(4*PIXELSQUARESIZE,0,blking);
+	boardarray[4][0] = BLACKKING;
+	chessboard.draw_image(5*PIXELSQUARESIZE,0,bdbishop);
+	boardarray[5][0] = BLACKBISHOP;
+	chessboard.draw_image(6*PIXELSQUARESIZE,0,blknight);
+	boardarray[6][0] = BLACKKNIGHT;
+	chessboard.draw_image(7*PIXELSQUARESIZE,0,bdrook);
+	boardarray[7][0] = BLACKROOK;
+	for(int i = 0; i <=7; i++)
+	{
+		chessboard.draw_image(i*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(i,1,BLACKPAWN));
+		boardarray[i][1] = BLACKPAWN;
+	}
+	updateBoard();
+}
+
+
 void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7 only call if your move is valid you dummy
 {
 	movecount++;
@@ -309,7 +310,7 @@ void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 			boardarray[7][desty] = BLANK;//override old one
 		}
 	}
-	else if((piece == blking && srcx == destx+2) || (piece == wlking && srcx == destx+2)(piece == bdking && srcx == destx+2) || (piece == wdking && srcx == destx+2))
+	else if((piece == blking && srcx == destx+2) || (piece == wlking && srcx == destx+2) || (piece == bdking && srcx == destx+2) || (piece == wdking && srcx == destx+2))
 	{
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
 		if(piece == wlking || piece == wdking)//done this way to prevent falsely identified castling
@@ -343,22 +344,25 @@ void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 	
 	chessboard.draw_image(srcx*PIXELSQUARESIZE, srcy*PIXELSQUARESIZE,parseDraw(srcx,srcy,BLANK));
 		
-	updateBoard();
+	
 	boardarray[destx][desty] = boardarray[srcx][srcy];//move piece to new position
 	boardarray[srcx][srcy] = BLANK;//override old one
+	updateBoard();
 }
 
-void handleClick(int p, int x, int y, bool select)
+bool handleClick(int p, int x, int y, bool select)
 {
 	if(lastp == p)
 	{
 		lastp = BLANK;
 		debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
+		return true;
 	}
 	else if(select && (lastp != BLANK))//if they select a piece of their color
 	{
 		//check what piece to draw
 		CImg<unsigned char> piecetodraw = parseDraw(x,y,p);
+		
 		//CHECK VALID MOVE FIRST
 		if(true)
 			moveDraw(piecetodraw,lastx,lasty,x,y);
@@ -372,4 +376,5 @@ void handleClick(int p, int x, int y, bool select)
 		lastp = p;
 		debugbox.fill(0).draw_text(0, 0, "PIECE SELECTED.", green);
 	}
+	return false;
 }
