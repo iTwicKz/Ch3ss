@@ -86,7 +86,7 @@ int lasty = 9;
 int lastp = BLANK;
 
 //counter
-int movecount = 0;
+int moveCount = 0;
 //to write to screen/debug
 const unsigned char green[] = { 0,255,0 };
 
@@ -113,7 +113,7 @@ int returnPiece(int x, int y)//returns piece at spot on board given
 
 int getMoveCount()
 {
-	return movecount;
+	return moveCount;
 }
 
 CImg<unsigned char> parseDraw(int xx, int yy, int pp)//draw light pieces on light squares, dark pieces on dark squares
@@ -289,7 +289,7 @@ void setup()
 
 void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7 only call if your move is valid you dummy
 {
-	movecount++;
+	moveCount++;
 	//check for the special moves en passant or castling or queening
 	//Castling move was checked as valid in handleclick
 	if((piece == blking && srcx+2 == destx) || (piece == wlking && srcx+2 == destx) || (piece == bdking && srcx+2 == destx) || (piece == wdking && srcx+2 == destx))//only time the king can move 2
@@ -343,8 +343,7 @@ void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int dest
 		chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
 	
 	chessboard.draw_image(srcx*PIXELSQUARESIZE, srcy*PIXELSQUARESIZE,parseDraw(srcx,srcy,BLANK));
-		
-	
+
 	boardarray[destx][desty] = boardarray[srcx][srcy];//move piece to new position
 	boardarray[srcx][srcy] = BLANK;//override old one
 	updateBoard();
@@ -358,10 +357,10 @@ bool handleClick(int p, int x, int y, bool select)
 		debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
 		return false;
 	}
-	else if(select && lastp != false)//if they select a piece of their color
+	else if(select && lastp != BLANK)
 	{
 		//check what piece to draw
-		CImg<unsigned char> piecetodraw = parseDraw(x,y,p);
+		CImg<unsigned char> piecetodraw = parseDraw(x,y,lastp);//Last p is the piece to move
 		
 		//CHECK VALID MOVE FIRST
 		if(true)
