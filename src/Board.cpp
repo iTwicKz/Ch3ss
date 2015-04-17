@@ -356,9 +356,9 @@ bool handleClick(int p, int x, int y, bool select)
 	{
 		lastp = BLANK;
 		debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
-		return true;
+		return false;
 	}
-	else if(select && (lastp != BLANK))//if they select a piece of their color
+	else if(select && lastp != false)//if they select a piece of their color
 	{
 		//check what piece to draw
 		CImg<unsigned char> piecetodraw = parseDraw(x,y,p);
@@ -376,5 +376,5 @@ bool handleClick(int p, int x, int y, bool select)
 		lastp = p;
 		debugbox.fill(0).draw_text(0, 0, "PIECE SELECTED.", green);
 	}
-	return false;
+	return true;
 }
