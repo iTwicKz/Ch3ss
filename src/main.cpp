@@ -1,15 +1,24 @@
-#include "Board.cpp"
-#include "CImg.h"
+#include "boardTest.h"
+#include "cimg.h"
 
 //g++ main.cpp -lpthread -lX11 
+//g++ -Wall -c
+
+using namespace std;
 using namespace cimg_library;
 
 int main() 
 {	
+	Piece testPiece;
+	Board testBoard;
+	
+	testPiece.setupPieceArray();
+	
 	bool player = true;//true is white false is black
 	bool selected = false;
-	setup();//setup board
-	updateBoard();
+	testBoard.setup();//setup board
+	testBoard.updateBoard();
+	
 	while (!main_disp.is_closed()) //display loop until closed
 	{
 		main_disp.wait();
@@ -18,13 +27,12 @@ int main()
 		const int x = main_disp.mouse_x();//get x coordinate
 		const int y = main_disp.mouse_y();//get y coordinate
 		
-		selected = handleClick(returnPiece(x/PIXELSQUARESIZE,y/PIXELSQUARESIZE),x/PIXELSQUARESIZE,y/PIXELSQUARESIZE, selected);
+		selected = testBoard.handleClick(returnPiece(x/PIXELSQUARESIZE,y/PIXELSQUARESIZE),x/PIXELSQUARESIZE,y/PIXELSQUARESIZE, selected);
 		if(!selected)//change player
 			player = !player;
 		
 		}
-		updateBoard();
+		testBoard.updateBoard();
 	}
 	return 0;
 }
-
