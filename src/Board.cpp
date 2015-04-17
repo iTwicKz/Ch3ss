@@ -361,7 +361,7 @@ bool handleClick(int p, int x, int y, bool select)
 	{
 		//check what piece to draw
 		CImg<unsigned char> piecetodraw = parseDraw(x,y,lastp);//Last p is the piece to move
-		
+		lastp = BLANK;//overwrite last piece to prevent double drawing
 		//CHECK VALID MOVE FIRST
 		if(true)
 			moveDraw(piecetodraw,lastx,lasty,x,y);
