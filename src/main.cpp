@@ -1,5 +1,6 @@
-#include "boardTest.h"
-#include "cimg.h"
+#include "Board.cpp"
+#include "CImg.h"
+//#include "Piece.h"
 
 //g++ main.cpp -lpthread -lX11 
 //g++ -Wall -c
@@ -9,10 +10,10 @@ using namespace cimg_library;
 
 int main() 
 {	
-	Piece testPiece;
+	//Piece testPiece;
 	Board testBoard;
 	
-	testPiece.setupPieceArray();
+	testBoard.setupPieceArray();
 	
 	bool player = true;//true is white false is black
 	bool selected = false;
@@ -27,7 +28,7 @@ int main()
 		const int x = main_disp.mouse_x();//get x coordinate
 		const int y = main_disp.mouse_y();//get y coordinate
 		
-		selected = testBoard.handleClick(returnPiece(x/PIXELSQUARESIZE,y/PIXELSQUARESIZE),x/PIXELSQUARESIZE,y/PIXELSQUARESIZE, selected);
+		selected = testBoard.handleClick(testBoard.returnPiece(x/PIXELSQUARESIZE,y/PIXELSQUARESIZE),x/PIXELSQUARESIZE,y/PIXELSQUARESIZE, selected);
 		if(!selected)//change player
 			player = !player;
 		
