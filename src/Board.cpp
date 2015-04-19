@@ -566,6 +566,42 @@ void Board::moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, i
 	updateBoard();
 }
 
+void Board::enPassant(bool *typeMoveLegal, int srcx, int srcy, int destx, int desty, int srcPiece, bool whiteColorsrc, int srcPieceColor){
+			
+	if(typeMoveLegal && abs(srcy - desty) == 2)
+	{
+		pieceArray[srcPiece]->setPassantCount(moveCount + 1);
+	}
+	else if(!*typeMoveLegal)
+	{
+		int val1 = -1;
+		if(whiteColorsrc) val1 = 1;
+		if(boardarray[destx][desty+val1] != -1)
+		{
+			int whiteBack = -1;
+			bool whetherWhite = true;
+			whetherWhite = pieceArray[boardarray[destx][desty + val1]]->getWhite();
+			if(whetherWhite)
+				whiteBack = 1;
+			else
+				whiteBack = 2;
+
+			if((srcy - desty == val1) && abs(destx - srcx) == 1)
+			{
+				if(boardarray[destx][desty + val1] >= 0 || boardarray[destx][desty + val1] <= 17)
+				{
+					if(moveCount == pieceArray[boardarray[destx][desty + val1]]->getPassantCount() && (whiteBack != srcPieceColor))
+					{
+						*typeMoveLegal = true;
+						moveDraw(dblank, destx, desty + val1, destx, desty + val1);
+					}
+				}
+			}
+		}
+	}
+			
+}	
+
 bool Board::validMove(int srcx, int srcy, int destx, int desty)
 {
 		bool collisionLegal = false;
@@ -602,8 +638,8 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 			
-			//typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
-			//collisionLegal = collision(destx, desty, srcx, srcy);		
+			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
+			collisionLegal = collision(destx, desty, srcx, srcy);		
 
 
 			//for black castle
@@ -632,8 +668,8 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 					typeMoveLegal = true;
 				}
 			}
-/*
-		
+
+		/*
 			if(typeMoveLegal && collisionLegal && check && turn) //legal move, in check, white turn
 			{
 				if(isCheck(pieceArray[WHITEKING]->getX(), pieceArray[WHITEKING]->getY(), destx, desty, srcx, srcy))
@@ -653,44 +689,13 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 					check = false;
 			}	
 
-		*/	
-			
+		*/
+			//bool* typePointer = typeMoveLegal;
 			if((srcPiece >= 0 && srcPiece <= 17))
 			//if((srcPiece >= 0 || srcPiece <= 17) && collisionLegal && sameTeam && checkMove)
 			{
-				if(typeMoveLegal && abs(srcy - desty) == 2)
-				{
-					pieceArray[srcPiece]->setPassantCount(moveCount + 1);
-				}
-				else if(!typeMoveLegal)
-				{
-					int val1 = -1;
-					if(whiteColorsrc) val1 = 1;
-					if(boardarray[destx][desty+val1] != -1)
-					{
-						int whiteBack = -1;
-						bool whetherWhite = true;
-						whetherWhite = pieceArray[boardarray[destx][desty + val1]]->getWhite();
-						if(whetherWhite)
-							whiteBack = 1;
-						else
-							whiteBack = 2;
-
-						if((srcy - desty == val1) && abs(destx - srcx) == 1)
-						{
-							if(boardarray[destx][desty + val1] >= 0 || boardarray[destx][desty + val1] <= 17)
-							{
-								if(moveCount == pieceArray[boardarray[destx][desty + val1]]->getPassantCount() && (whiteBack != srcPieceColor))
-								{
-									typeMoveLegal = true;
-									moveDraw(dblank, destx, desty + val1, destx, desty + val1);
-								}
-							}
-						}
-					}
-				}
-			} 
-			
+				enPassant(&typeMoveLegal, srcx, srcy, destx, desty, srcPiece, whiteColorsrc, srcPieceColor);
+			}
 
 			if(srcPiece >= 20 && srcPiece <= 23)
 				collisionLegal = true;
