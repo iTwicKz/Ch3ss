@@ -602,8 +602,8 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 			
-			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
-			collisionLegal = collision(destx, desty, srcx, srcy);		
+			//typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
+			//collisionLegal = collision(destx, desty, srcx, srcy);		
 
 
 			//for black castle
@@ -654,7 +654,8 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			}	
 
 		*/	
-			if((srcPiece >= 0 || srcPiece <= 17))
+			
+			if((srcPiece >= 0 && srcPiece <= 17))
 			//if((srcPiece >= 0 || srcPiece <= 17) && collisionLegal && sameTeam && checkMove)
 			{
 				if(typeMoveLegal && abs(srcy - desty) == 2)
@@ -665,21 +666,25 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 				{
 					int val1 = -1;
 					if(whiteColorsrc) val1 = 1;
-
-					int whiteBack = -1;
-					if(pieceArray[boardarray[destx][desty + val1]]->getWhite())
-						whiteBack = 1;
-					else
-						whiteBack = 2;
-
-					if((srcy - desty == val1) && abs(destx - srcx) == 1)
+					if(boardarray[destx][desty+val1] != -1)
 					{
-						if(boardarray[destx][desty + val1] >= 0 || boardarray[destx][desty + val1] <= 17)
+						int whiteBack = -1;
+						bool whetherWhite = true;
+						whetherWhite = pieceArray[boardarray[destx][desty + val1]]->getWhite();
+						if(whetherWhite)
+							whiteBack = 1;
+						else
+							whiteBack = 2;
+
+						if((srcy - desty == val1) && abs(destx - srcx) == 1)
 						{
-							if(moveCount == pieceArray[boardarray[destx][desty + val1]]->getPassantCount() && (whiteBack != srcPieceColor))
+							if(boardarray[destx][desty + val1] >= 0 || boardarray[destx][desty + val1] <= 17)
 							{
-								typeMoveLegal = true;
-								moveDraw(dblank, destx, desty + val1, destx, desty + val1);
+								if(moveCount == pieceArray[boardarray[destx][desty + val1]]->getPassantCount() && (whiteBack != srcPieceColor))
+								{
+									typeMoveLegal = true;
+									moveDraw(dblank, destx, desty + val1, destx, desty + val1);
+								}
 							}
 						}
 					}
@@ -728,6 +733,7 @@ bool Board::handleClick(int p, int x, int y, bool select)
 			moveDraw(piecetodraw,lastx,lasty,x,y);
 			lastPieceP = BLANK;
 		}
+		
 		else
 		{
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
@@ -735,7 +741,7 @@ bool Board::handleClick(int p, int x, int y, bool select)
 			chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, originalPiece);
 			//debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
 		}
-		}
+	}
 	else
 	{
 		lastx = x;
