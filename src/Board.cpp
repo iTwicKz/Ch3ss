@@ -140,8 +140,15 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			{
 				pieceIndex = i;
 				pieceArray[i]->setPosition(newX, newY);
+				break;
 			}
 		}
+
+		int boardIndex;
+
+		boardIndex = boardarray[oldX][oldY];
+		boardarray[newX][newY] = pieceIndex;
+		boardarray[oldX][oldY] = -1;
 		
 		for(int i = 0; i < 32; i++)
 		{
@@ -158,6 +165,8 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		}
 		
 		pieceArray[pieceIndex]->setPosition(oldX, oldY);
+		boardarray[oldX][oldY] = boardIndex;
+		boardarray[newX][newY] = -1;
 		
 	}
 	else if(newX != -2 && !turn) //hypo array, black is in check
@@ -170,8 +179,15 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			{
 				pieceIndex = i;
 				pieceArray[i]->setPosition(newX, newY);
+				break;
 			}
 		}
+
+		int boardIndex;
+
+		boardIndex = boardarray[oldX][oldY];
+		boardarray[newX][newY] = pieceIndex;
+		boardarray[oldX][oldY] = -1;
 		
 		for(int i = 0; i < 32; i++)
 		{
@@ -188,7 +204,8 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		}
 		
 		pieceArray[pieceIndex]->setPosition(oldX, oldY);
-		
+		boardarray[oldX][oldY] = boardIndex;
+		boardarray[newX][newY] = -1;
 	}
 
 	return false;
@@ -475,6 +492,10 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			
 			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
 			collisionLegal = collision(destx, desty, srcx, srcy);		
+
+			//if((srcPiece == 30 || srcPiece == 31) && srcx == 4 && destx == 6 && ){
+
+			//}
 
 		
 			if(typeMoveLegal && collisionLegal && check && turn) //legal move, in check, white turn
