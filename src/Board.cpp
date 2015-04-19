@@ -311,16 +311,35 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 {
 		bool collisionLegal = false;
 		bool typeMoveLegal = false;
+		bool sameTeam = true;
 		int srcPiece = boardarray[srcx][srcy];
 		int destPiece = boardarray[destx][desty];
+		int srcPieceColor = 0;
+		int destPieceColor = 0;
+		bool whiteColorsrc = false;
+		bool whiteColorDest = false;
+		
+		if(destPiece != -1){
+			whiteColorsrc = pieceArray[srcPiece]->getWhite();
+			whiteColorDest = pieceArray[destPiece]->getWhite();
+
+			if(whiteColorsrc) srcPieceColor = 1;
+			else srcPieceColor = 2;
+			if(whiteColorDest) destPieceColor = 1;
+			else destPieceColor = 2;
+		}
+		else destPieceColor = 3;
 
 		typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty); 
 		collisionLegal = collision(srcx, srcy, destx, desty);
 
+		if(srcPieceColor == destPieceColor)
+			sameTeam = false;
+
 		if(srcPiece >= 20 && srcPiece <= 23)
 			collisionLegal = true;
 
-		if(typeMoveLegal && collisionLegal)
+		if(typeMoveLegal && collisionLegal && sameTeam)
 		{
 			if(srcPiece == 30 || srcPiece == 31 || (srcPiece <= 27 && srcPiece >= 24) || (srcPiece <= 0 && srcPiece >= 15))
 				pieceArray[srcPiece]->setFirstMoved();	
