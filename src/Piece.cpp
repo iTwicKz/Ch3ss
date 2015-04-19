@@ -35,6 +35,9 @@ int Piece::getY()
 	return position[1];
 }
 
+bool Piece::getFirstMoved(){
+	return firstMoved;
+}
 //----------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------
@@ -127,6 +130,15 @@ void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
 		}
 }
 */
+
+void Pawn::setPassantCount(int passantCount){
+	this->passantCount = passantCount;
+}
+
+int Pawn::getPassantCount(){
+	return passantCount;
+}
+
 //----------------------------------------------------------------------------------------------------------------
 bool Bishop::moveLegal(int x, int y, int destPiece){
 
