@@ -52,7 +52,7 @@
 using namespace cimg_library;
 
 //each piece is 60px by 60px chessboard is 480px by 480px or 60px * 8
-CImg<unsigned char> chessboard(IMAGEPATH "chessboard.png"); 
+CImg<unsigned char> chessboard(IMAGEPATH "chessboard.jpg"); 
 
 CImg<unsigned char> wlking(IMAGEPATH "King-White-Light.jpg");
 CImg<unsigned char> wdking(IMAGEPATH "King-White-Dark.jpg");

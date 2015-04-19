@@ -30,7 +30,7 @@ void Piece::setDied(){
 //----------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------
-bool Pawn::moveLegal(int x, int y){ // fix en passant
+bool Pawn::moveLegal(int x, int y, int destPiece){ // fix en passant
 
 	bool valid = false; 
 	
@@ -45,16 +45,16 @@ bool Pawn::moveLegal(int x, int y){ // fix en passant
 		val2 = abs(val2);
 	}
 	
-	if(firstMoved && (move[1] - position[1] == val2) && (position[0] == move[0]))	//marks that the object has moved
+	if(firstMoved && (move[1] - position[1] == val2) && (position[0] == move[0]) && destPiece == -1)	//marks that the object has moved
 	{
 		valid = true;			
 		
 	}
-	else if(move[1] - position[1] == val1 && position[0] == move[0])	//marks that the object has moved
+	else if(move[1] - position[1] == val1 && position[0] == move[0] && destPiece == -1)	//marks that the object has moved
 	{
 		valid = true;
 	}
-	else if(move[1] - position[1] == val1 && abs(move[0] - position[0]) == 1)
+	else if(move[1] - position[1] == val1 && abs(move[0] - position[0]) == 1 && destPiece != -1)
 	{
 		//check for attack
 		valid = true;
@@ -120,7 +120,7 @@ void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
 }
 */
 //----------------------------------------------------------------------------------------------------------------
-bool Bishop::moveLegal(int x, int y){
+bool Bishop::moveLegal(int x, int y, int destPiece){
 
 	bool valid = false;
 	
@@ -137,7 +137,7 @@ bool Bishop::moveLegal(int x, int y){
 	
 } 
 //----------------------------------------------------------------------------------------------------------------
-bool Knight::moveLegal(int x, int y){
+bool Knight::moveLegal(int x, int y, int destPiece){
 
 	bool valid = false;
 	
@@ -157,7 +157,7 @@ bool Knight::moveLegal(int x, int y){
 	
 } 
 //----------------------------------------------------------------------------------------------------------------
-bool Rook::moveLegal(int x, int y) {
+bool Rook::moveLegal(int x, int y, int destPiece) {
 	
 	bool valid = false;
 	
@@ -190,7 +190,7 @@ void Rook::setFirstMoved(){
 	firstMoved = false;
 }
 //----------------------------------------------------------------------------------------------------------------
-bool Queen::moveLegal(int x, int y) {
+bool Queen::moveLegal(int x, int y, int destPiece) {
 
 	bool valid = false;
 	
@@ -219,7 +219,7 @@ bool Queen::moveLegal(int x, int y) {
 	
 }
 //----------------------------------------------------------------------------------------------------------------
-bool King::moveLegal(int x, int y) {
+bool King::moveLegal(int x, int y, int destPiece) {
 
 	bool valid = false;
 	

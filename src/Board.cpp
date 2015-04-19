@@ -357,7 +357,7 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 
 		if(colorTurn == srcPieceColor){					//checks for whose turn it is
 
-			/*
+			
 			if(destPiece != -1){						//fixes OutofIndex error
 				whiteColorDest = pieceArray[destPiece]->getWhite();
 
@@ -365,33 +365,20 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 				else destPieceColor = 2;
 			}
 			else destPieceColor = 3;
-			*/
-			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty); 
-			collisionLegal = collision(srcx, srcy, destx, desty);
-
-			/*
-			if(srcPiece >= 0 && srcPiece <= 15){			//check pawn
-				debugbox.fill(0).draw_text(0, 0, "BooBoo", green);
-				if(abs(srcx - destx) == 1){
-					debugbox.fill(0).draw_text(0, 0, "Karma", green);
-					if(destPiece == -1){
-						typeMoveLegal = false;
-					}
-				}
-			}
-			*/
-			/*
+			
+			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
+			collisionLegal = collision(srcx, srcy, destx, desty);			
 
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 
 			if(srcPiece >= 20 && srcPiece <= 23)
 				collisionLegal = true;
-	*/
+	
 			if(typeMoveLegal && collisionLegal && sameTeam)
 			{
-				//if(srcPiece == 30 || srcPiece == 31 || (srcPiece <= 27 && srcPiece >= 24) || (srcPiece >= 0 && srcPiece <= 15))
-				//	pieceArray[srcPiece]->setFirstMoved();	
+				if(srcPiece == 30 || srcPiece == 31 || (srcPiece <= 27 && srcPiece >= 24) || (srcPiece >= 0 && srcPiece <= 15))
+					pieceArray[srcPiece]->setFirstMoved();	
 				pieceArray[srcPiece]->setPosition(destx, desty);
 				turn = !turn;
 				return true;
