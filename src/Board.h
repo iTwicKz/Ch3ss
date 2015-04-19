@@ -81,6 +81,7 @@ CImg<unsigned char> bdpawn(IMAGEPATH "Pawn-Black-Dark.jpg");
 CImg<unsigned char> lblank(IMAGEPATH "Blank-Light.jpg");
 CImg<unsigned char> dblank(IMAGEPATH "Blank-Dark.jpg");
 
+CImg<unsigned char> selection(IMAGEPATH "selection.jpg");
 CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0); //debug box
 
 //Displays (each display is a new window)
@@ -93,13 +94,14 @@ int boardarray[8][8];
 int lastx = 9;
 int lasty = 9;
 int lastp = BLANK;
+int lastPieceP = BLANK;
 
 //counter
 int moveCount = 0;
 //to write to screen/debug
 const unsigned char green[] = { 0,255,0 };
 bool turn = true; //true = white's turn, false = black's turn
-		
+bool check = false;
 
 class Board 
 {
@@ -120,6 +122,8 @@ class Board
 		bool collision(int moveX, int moveY, int positionX, int positionY);
 		bool validMove(int srcx, int srcy, int destx, int desty);
 
+		bool isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY);
+		//bool check = false;
 
 };
 
