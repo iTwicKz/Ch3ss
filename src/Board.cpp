@@ -1,4 +1,4 @@
-#include "boardTest.h"
+#include "Board.h"
 
 
 void Board::setupPieceArray()
@@ -215,25 +215,25 @@ bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Me
 				}
 			}
 		}
-	} else if ((moveSpacesHor = 0) && (moveSpacesVer > 0)) { //Vertical +
+	} else if ((moveSpacesHor == 0) && (moveSpacesVer > 0)) { //Vertical +
 		for ( int i = 1; i<moveSpacesVer; i++) {
 			if (returnPiece(positionX, positionY + i) != -1) {
 					free = false;
 				}
 			}
-	} else if ((moveSpacesHor = 0) && (moveSpacesVer < 0)) { //Vertical -
+	} else if ((moveSpacesHor == 0) && (moveSpacesVer < 0)) { //Vertical -
 		for ( int i = 1; i<abs(moveSpacesVer); i++) {
 			if (returnPiece(positionX, positionY - i) != -1) {
 					free = false;
 				}
 			}
-	} else if ((moveSpacesVer = 0) && (moveSpacesHor > 0)) { //Horizontal +
+	} else if ((moveSpacesVer == 0) && (moveSpacesHor > 0)) { //Horizontal +
 		for ( int i = 1; i<moveSpacesHor; i++) {
 			if (returnPiece(positionX + 1, positionY) != -1) {
 					free = false;
 				}
 			}
-	} else if ((moveSpacesVer = 0) && (moveSpacesHor < 0)) { //Horizontal -
+	} else if ((moveSpacesVer == 0) && (moveSpacesHor < 0)) { //Horizontal -
 		for ( int i = 1; i<abs(moveSpacesHor); i++) {
 			if (returnPiece(positionX - 1, positionY) != -1) {
 				free = false;
@@ -317,8 +317,13 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 		typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty); 
 		collisionLegal = collision(srcx, srcy, destx, desty);
 
+		if(srcPiece >= 20 && srcPiece <= 23)
+			collisionLegal = true;
+
 		if(typeMoveLegal && collisionLegal)
 		{
+			if(srcPiece == 30 || srcPiece == 31 || (srcPiece <= 27 && srcPiece >= 24) || (srcPiece <= 0 && srcPiece >= 15))
+				pieceArray[srcPiece]->setFirstMoved();	
 			pieceArray[srcPiece]->setPosition(destx, desty);
 			return true;
 		}
