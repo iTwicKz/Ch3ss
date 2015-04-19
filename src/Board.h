@@ -98,6 +98,7 @@ int lastp = BLANK;
 int moveCount = 0;
 //to write to screen/debug
 const unsigned char green[] = { 0,255,0 };
+bool turn = true; //true = white's turn, false = black's turn
 		
 
 class Board 
@@ -118,6 +119,8 @@ class Board
 		bool handleClick(int p, int x, int y, bool select);
 		bool collision(int moveX, int moveY, int positionX, int positionY);
 		bool validMove(int srcx, int srcy, int destx, int desty);
+
+
 };
 
 

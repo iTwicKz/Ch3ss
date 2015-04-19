@@ -23,6 +23,7 @@ class Piece {
 		int blackScore;
 		int whiteScore;
 		int counterGraveyard;
+		bool firstMoved;
 		
 
 	public:
@@ -37,6 +38,7 @@ class Piece {
 			position[1] = positionY;
 			this->blackScore = 0;
 			this->whiteScore = 0;
+			firstMoved = true;
 			//int counterGraveyard = 0;
 			
 		}
@@ -49,24 +51,24 @@ class Piece {
 		//Piece* pieceArray[32];
 		void setPosition(int x ,int y);
 		void setDied();
-		void setFirstMoved(){};
+		virtual void setFirstMoved(){};
 		
 };
 
 class Pawn : public Piece{
-	private:
-		bool firstMoved;			//checks if pawn has been moved for two move rule
+	//private:
+	//	bool firstMoved;			//checks if pawn has been moved for two move rule
 		
 
 	public:
 		Pawn(bool white, int positionX, int positionY, int type = 0, string sprite = "PawnPic") : 
 			Piece(white, positionX, positionY, type, sprite){
-			firstMoved = true;
+			//firstMoved = true;
 		};
 		~Pawn(){};
 		bool moveLegal(int x, int y);	//checks if the move is allowed and if so, mutates position
 		void setFirstMoved();
-		void transformer();			//once across board, option to change
+		//void transformer();			//once across board, option to change
 };
 
 
@@ -91,13 +93,13 @@ class Knight : public Piece{
 
 class Rook : public Piece{
 
-	private:
-		bool firstMoved;			//checks if rook has been moved for castling rule
+	//private:
+	//	bool firstMoved;			//checks if rook has been moved for castling rule
 
 	public:
 		Rook(bool white, int positionX, int positionY, int type = 3, string sprite = "RookPic") : 
 			Piece(white, positionX, positionY, type, sprite){
-			firstMoved = true;
+	//		firstMoved = true;
 		};
 		~Rook(){};
 		bool moveLegal(int x, int y);	//checks if the move is allowed and if so, mutates position
@@ -115,13 +117,13 @@ class Queen : public Piece{
 };
 
 class King : public Piece{
-	private:
-		bool firstMoved; // true = on its first move, false = moved already
+//	private:
+//		bool firstMoved; // true = on its first move, false = moved already
 	
 	public:
 		King(bool white, int positionX, int positionY, int type = 5, string sprite = "KingPic") :
 			Piece(white, positionX, positionY, type, sprite){
-				firstMoved = true;
+//				firstMoved = true;
 		};
 		~King(){};
 		bool moveLegal(int x, int y);

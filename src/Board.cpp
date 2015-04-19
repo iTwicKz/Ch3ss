@@ -8,7 +8,7 @@ void Board::setupPieceArray()
 			if(index < 8)
 				pieceArray[index] = new Pawn(true, index, 6);								//white pawns
 			else if(index < 16)
-				pieceArray[index] = new Pawn(false, index - 7, 1);							//black pawns
+				pieceArray[index] = new Pawn(false, index - 8, 1);							//black pawns
 			else if(index < 20)
 			{
 				if(index % 2 == 0)
@@ -71,25 +71,25 @@ CImg<unsigned char> Board::parseDraw(int xx, int yy, int pp)//draw light pieces 
 		piece = wlking;
 		if(pp == WHITEQUEEN)
 		piece = wlqueen;
-		if(pp == WHITEKNIGHT)
+		if(pp == WHITEKNIGHT || pp == WHITEKNIGHTTWO)
 		piece = wlknight;
-		if(pp == WHITEBISHOP)
+		if(pp == WHITEBISHOP || pp == WHITEBISHOPTWO)
 		piece = wlbishop;
-		if(pp == WHITEROOK)
+		if(pp == WHITEROOK || pp == WHITEROOKTWO)
 		piece = wlrook;
-		if(pp == WHITEPAWN)
+		if(pp == WHITEPAWN || pp == WHITEPAWNTWO || pp == WHITEPAWNTHREE || pp == WHITEPAWNFOUR || pp == WHITEPAWNFIVE || pp == WHITEPAWNSIX || pp == WHITEPAWNSEVEN || pp == WHITEPAWNEIGHT)
 		piece = wlpawn;
 		if(pp == BLACKKING)
 		piece = blking;
 		if(pp == BLACKQUEEN)
 		piece = blqueen;
-		if(pp == BLACKKNIGHT)
+		if(pp == BLACKKNIGHT || pp == BLACKKNIGHTTWO)
 		piece = blknight;
-		if(pp == BLACKBISHOP)
+		if(pp == BLACKBISHOP || pp == BLACKBISHOPTWO)
 		piece = blbishop;
-		if(pp == BLACKROOK)
+		if(pp == BLACKROOK || pp == BLACKROOKTWO)
 		piece = blrook;
-		if(pp == BLACKPAWN)
+		if(pp == BLACKPAWN || pp == BLACKPAWNTWO || pp == BLACKPAWNTHREE || pp == BLACKPAWNFOUR || pp == BLACKPAWNFIVE || pp == BLACKPAWNSIX || pp == BLACKPAWNSEVEN || pp == BLACKPAWNEIGHT)
 		piece = blpawn;
 		if(pp == BLANK)
 		piece = lblank;
@@ -100,25 +100,25 @@ CImg<unsigned char> Board::parseDraw(int xx, int yy, int pp)//draw light pieces 
 		piece = wdking;
 		if(pp == WHITEQUEEN)
 		piece = wdqueen;
-		if(pp == WHITEKNIGHT)
+		if(pp == WHITEKNIGHT || pp == WHITEKNIGHTTWO)
 		piece = wdknight;
-		if(pp == WHITEBISHOP)
+		if(pp == WHITEBISHOP || pp == WHITEBISHOPTWO)
 		piece = wdbishop;
-		if(pp == WHITEROOK)
+		if(pp == WHITEROOK || pp == WHITEROOKTWO)
 		piece = wdrook;
-		if(pp == WHITEPAWN)
+		if(pp == WHITEPAWN || pp == WHITEPAWNTWO || pp == WHITEPAWNTHREE || pp == WHITEPAWNFOUR || pp == WHITEPAWNFIVE || pp == WHITEPAWNSIX || pp == WHITEPAWNSEVEN || pp == WHITEPAWNEIGHT)
 		piece = wdpawn;
 		if(pp == BLACKKING)
 		piece = bdking;
 		if(pp == BLACKQUEEN)
 		piece = bdqueen;
-		if(pp == BLACKKNIGHT)
+		if(pp == BLACKKNIGHT || pp == BLACKKNIGHTTWO)
 		piece = bdknight;
-		if(pp == BLACKBISHOP)
+		if(pp == BLACKBISHOP || pp == BLACKBISHOPTWO)
 		piece = bdbishop;
-		if(pp == BLACKROOK)
+		if(pp == BLACKROOK || pp == BLACKROOKTWO)
 		piece = bdrook;
-		if(pp == BLACKPAWN)
+		if(pp == BLACKPAWN || pp == BLACKPAWNTWO || pp == BLACKPAWNTHREE || pp == BLACKPAWNFOUR || pp == BLACKPAWNFIVE || pp == BLACKPAWNSIX || pp == BLACKPAWNSEVEN || pp == BLACKPAWNEIGHT)
 		piece = bdpawn;
 		if(pp == BLANK)
 		piece = dblank;
@@ -147,16 +147,27 @@ void Board::setup()
 	chessboard.draw_image(4*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wdking);
 	boardarray[4][7] = WHITEKING;
 	chessboard.draw_image(5*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlbishop);
-	boardarray[5][7] = WHITEBISHOP;
+	boardarray[5][7] = WHITEBISHOPTWO;
 	chessboard.draw_image(6*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wdknight);
-	boardarray[6][7] = WHITEKNIGHT;
+	boardarray[6][7] = WHITEKNIGHTTWO;
 	chessboard.draw_image(7*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlrook);
-	boardarray[7][7] = WHITEROOK;
-	for(int i = 0; i <=7; i++)
-	{
-		chessboard.draw_image(i*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(i,6,WHITEPAWN));
-		boardarray[i][6] = WHITEPAWN;
-	}
+	boardarray[7][7] = WHITEROOKTWO;
+	chessboard.draw_image(0*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(0,6,WHITEPAWN));
+	boardarray[0][6] = WHITEPAWN;
+	chessboard.draw_image(1*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(1,6,WHITEPAWN));
+	boardarray[1][6] = WHITEPAWNTWO;
+	chessboard.draw_image(2*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(2,6,WHITEPAWN));
+	boardarray[2][6] = WHITEPAWNTHREE;
+	chessboard.draw_image(3*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(3,6,WHITEPAWN));
+	boardarray[3][6] = WHITEPAWNFOUR;
+	chessboard.draw_image(4*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(4,6,WHITEPAWN));
+	boardarray[4][6] = WHITEPAWNFIVE;
+	chessboard.draw_image(5*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(5,6,WHITEPAWN));
+	boardarray[5][6] = WHITEPAWNSIX;
+	chessboard.draw_image(6*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(6,6,WHITEPAWN));
+	boardarray[6][6] = WHITEPAWNSEVEN;
+	chessboard.draw_image(7*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(7,6,WHITEPAWN));
+	boardarray[7][6] = WHITEPAWNEIGHT;
 		
 	//black
 	chessboard.draw_image(0,0,blrook);
@@ -170,16 +181,28 @@ void Board::setup()
 	chessboard.draw_image(4*PIXELSQUARESIZE,0,blking);
 	boardarray[4][0] = BLACKKING;
 	chessboard.draw_image(5*PIXELSQUARESIZE,0,bdbishop);
-	boardarray[5][0] = BLACKBISHOP;
+	boardarray[5][0] = BLACKBISHOPTWO;
 	chessboard.draw_image(6*PIXELSQUARESIZE,0,blknight);
-	boardarray[6][0] = BLACKKNIGHT;
+	boardarray[6][0] = BLACKKNIGHTTWO;
 	chessboard.draw_image(7*PIXELSQUARESIZE,0,bdrook);
-	boardarray[7][0] = BLACKROOK;
-	for(int i = 0; i <=7; i++)
-	{
-		chessboard.draw_image(i*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(i,1,BLACKPAWN));
-		boardarray[i][1] = BLACKPAWN;
-	}
+	boardarray[7][0] = BLACKROOKTWO;
+	chessboard.draw_image(0*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(0,1,BLACKPAWN));
+	boardarray[0][1] = BLACKPAWN;
+	chessboard.draw_image(1*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(1,1,BLACKPAWN));
+	boardarray[1][1] = BLACKPAWNTWO;
+	chessboard.draw_image(2*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(2,1,BLACKPAWN));
+	boardarray[2][1] = BLACKPAWNTHREE;
+	chessboard.draw_image(3*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(3,1,BLACKPAWN));
+	boardarray[3][1] = BLACKPAWNFOUR;
+	chessboard.draw_image(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(4,1,BLACKPAWN));
+	boardarray[4][1] = BLACKPAWNFIVE;
+	chessboard.draw_image(5*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(5,1,BLACKPAWN));
+	boardarray[5][1] = BLACKPAWNSIX;
+	chessboard.draw_image(6*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(6,1,BLACKPAWN));
+	boardarray[6][1] = BLACKPAWNSEVEN;
+	chessboard.draw_image(7*PIXELSQUARESIZE,1*PIXELSQUARESIZE,parseDraw(7,1,BLACKPAWN));
+	boardarray[7][1] = BLACKPAWNEIGHT;
+
 	updateBoard();
 }
 
@@ -240,6 +263,10 @@ bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Me
 				}
 			}
 	}
+	if(free)
+		debugbox.fill(0).draw_text(0, 0, "No Collision", green);
+	else
+		debugbox.fill(0).draw_text(0, 0, "Collision", green);
 	return free;
 }
 
@@ -316,37 +343,60 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 		int destPiece = boardarray[destx][desty];
 		int srcPieceColor = 0;
 		int destPieceColor = 0;
-		bool whiteColorsrc = false;
+		bool whiteColorsrc = pieceArray[srcPiece]->getWhite();
 		bool whiteColorDest = false;
-		
-		if(destPiece != -1){
-			whiteColorsrc = pieceArray[srcPiece]->getWhite();
-			whiteColorDest = pieceArray[destPiece]->getWhite();
+		int colorTurn = 0;
 
-			if(whiteColorsrc) srcPieceColor = 1;
+		if(turn)
+			colorTurn = 1;
+		else
+			colorTurn = 2;
+
+		if(whiteColorsrc) srcPieceColor = 1;
 			else srcPieceColor = 2;
-			if(whiteColorDest) destPieceColor = 1;
-			else destPieceColor = 2;
+
+		if(colorTurn == srcPieceColor){					//checks for whose turn it is
+
+			/*
+			if(destPiece != -1){						//fixes OutofIndex error
+				whiteColorDest = pieceArray[destPiece]->getWhite();
+
+				if(whiteColorDest) destPieceColor = 1;		//checks for friendly fire
+				else destPieceColor = 2;
+			}
+			else destPieceColor = 3;
+			*/
+			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty); 
+			collisionLegal = collision(srcx, srcy, destx, desty);
+
+			/*
+			if(srcPiece >= 0 && srcPiece <= 15){			//check pawn
+				debugbox.fill(0).draw_text(0, 0, "BooBoo", green);
+				if(abs(srcx - destx) == 1){
+					debugbox.fill(0).draw_text(0, 0, "Karma", green);
+					if(destPiece == -1){
+						typeMoveLegal = false;
+					}
+				}
+			}
+			*/
+			/*
+
+			if(srcPieceColor == destPieceColor)
+				sameTeam = false;
+
+			if(srcPiece >= 20 && srcPiece <= 23)
+				collisionLegal = true;
+	*/
+			if(typeMoveLegal && collisionLegal && sameTeam)
+			{
+				//if(srcPiece == 30 || srcPiece == 31 || (srcPiece <= 27 && srcPiece >= 24) || (srcPiece >= 0 && srcPiece <= 15))
+				//	pieceArray[srcPiece]->setFirstMoved();	
+				pieceArray[srcPiece]->setPosition(destx, desty);
+				turn = !turn;
+				return true;
+			}
 		}
-		else destPieceColor = 3;
-
-		typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty); 
-		collisionLegal = collision(srcx, srcy, destx, desty);
-
-		if(srcPieceColor == destPieceColor)
-			sameTeam = false;
-
-		if(srcPiece >= 20 && srcPiece <= 23)
-			collisionLegal = true;
-
-		if(typeMoveLegal && collisionLegal && sameTeam)
-		{
-			if(srcPiece == 30 || srcPiece == 31 || (srcPiece <= 27 && srcPiece >= 24) || (srcPiece <= 0 && srcPiece >= 15))
-				pieceArray[srcPiece]->setFirstMoved();	
-			pieceArray[srcPiece]->setPosition(destx, desty);
-			return true;
-		}
-
 		return false;
 	
 		

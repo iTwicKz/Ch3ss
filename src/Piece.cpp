@@ -1,32 +1,5 @@
 #include "Piece.h"
 
-
-
-
-/*
-
-void Piece::parseMove(string position){		//desired move format = A1 <= desiredMove <= H8
-		
-	bool invalidString = true;
-	if(position.size() == 2){
-		if((position.at(0) >= 65 && position.at(0) <= 72) || 
-			(position.at(0) >= 97 && position.at(0) <= 104)){
-			if(position.at(1) >= 49 && position.at(1) <= 56){
-				invalidString = false;
-				char x = toupper(position.at(0));
-				move[0] = static_cast<int>(x) - 65;
-				move[1] = position.at(1) - '0' - 1;
-				movePiece();
-			}
-		}
-	}
-	if(!invalidString){
-		cout << "You suck. Think about it";
-	}
-		
-}
-*/
-
 int* Piece::getPosition(){
 		return position;
 }
@@ -36,7 +9,7 @@ int Piece::getType(){
 }
 
 bool Piece::getWhite(){
-	return white;
+	return this->white;
 }
 
 bool Piece::getDead(){
@@ -59,8 +32,7 @@ void Piece::setDied(){
 //----------------------------------------------------------------------------------------------------------------
 bool Pawn::moveLegal(int x, int y){ // fix en passant
 
-	bool valid = false;
-	//int moveCount = getMoveCount(); //90, 91, 
+	bool valid = false; 
 	
 	move[0] = x;
 	move[1] = y;
@@ -73,21 +45,23 @@ bool Pawn::moveLegal(int x, int y){ // fix en passant
 		val2 = abs(val2);
 	}
 	
-	if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0] && !firstMoved)	//marks that the object has moved
+	if(firstMoved && (move[1] - position[1] == val2) && (position[0] == move[0]))	//marks that the object has moved
 	{
-		return true;			
+		valid = true;			
 		
 	}
 	else if(move[1] - position[1] == val1 && position[0] == move[0])	//marks that the object has moved
 	{
-		return true;
+		valid = true;
 	}
-	else if(move[1] - position[1] == val1 && abs(move[1] - position[1]) == 1)
+	else if(move[1] - position[1] == val1 && abs(move[0] - position[0]) == 1)
 	{
-		return true;
+		//check for attack
+		valid = true;
 	}
 	else cout<<"Brahhhhhhhhhhh you can't move dat";		
 	
+	/*
 	int end = 0;			//set opposing board row location for black
 	if(white) end = 7;		//set opposing board row location for white
 
@@ -97,16 +71,16 @@ bool Pawn::moveLegal(int x, int y){ // fix en passant
 		valid = true;
 		firstMoved = false;
 	}
-	
+	*/
 		
 	return valid;
 		
 }
 
 void Pawn::setFirstMoved(){
-	firstMoved = true;
+	firstMoved = false;
 }
-
+/*
 void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
 		bool chosen = false;
 		while (!chosen){
@@ -144,6 +118,7 @@ void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
 			else cout << "Sorry. That is not an option. Please choose again" << endl;
 		}
 }
+*/
 //----------------------------------------------------------------------------------------------------------------
 bool Bishop::moveLegal(int x, int y){
 
@@ -212,7 +187,7 @@ bool Rook::moveLegal(int x, int y) {
 }
 
 void Rook::setFirstMoved(){
-	firstMoved = true;
+	firstMoved = false;
 }
 //----------------------------------------------------------------------------------------------------------------
 bool Queen::moveLegal(int x, int y) {
@@ -295,7 +270,7 @@ bool King::moveLegal(int x, int y) {
 }
 
 void King::setFirstMoved(){
-	firstMoved = true;
+	firstMoved = false;
 }
 //----------------------------------------------------------------------------------------------------------------
 
