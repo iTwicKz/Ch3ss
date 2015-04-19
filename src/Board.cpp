@@ -103,7 +103,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 	{
 		for(int i = 0; i < 32; i++)
 		{
-			if(i != 30)
+			if((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27)
 			{
 				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 				{
@@ -118,7 +118,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 	{
 		for(int i = 0; i < 32; i++)
 		{
-			if(i != 31)
+			if((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26)
 			{
 				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 				{
@@ -145,12 +145,12 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		
 		for(int i = 0; i < 32; i++)
 		{
-			if(i != 30 && pieceIndex != 30)
+			if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex != 30)
 			{
 				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					return true;
 			}
-			else if(i != 30 && pieceIndex == 30)
+			else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex == 30)
 			{
 				if(pieceArray[i]->moveLegal(newX, newY, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					return true;
@@ -175,12 +175,12 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		
 		for(int i = 0; i < 32; i++)
 		{
-			if(i != 31 && pieceIndex != 31)
+			if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex != 31)
 			{
 				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					return true;
 			}
-			else if(i != 31 && pieceIndex == 31)
+			else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex == 31)
 			{
 				if(pieceArray[i]->moveLegal(newX, newY, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					return true;
@@ -190,6 +190,8 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		pieceArray[pieceIndex]->setPosition(oldX, oldY);
 		
 	}
+
+	return false;
 }
 
 //Board Methods defined
@@ -473,7 +475,7 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			
 			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
 			collisionLegal = collision(destx, desty, srcx, srcy);		
-/*
+
 		
 			if(typeMoveLegal && collisionLegal && check && turn) //legal move, in check, white turn
 			{
@@ -493,7 +495,7 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 				else
 					check = false;
 			}	
-	*/
+	
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 
@@ -535,10 +537,12 @@ bool Board::handleClick(int p, int x, int y, bool select)
 		if(validMove(lastx,lasty,x,y))
 			moveDraw(piecetodraw,lastx,lasty,x,y);
 		else
+		{
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
-			//CImg<unsigned char> originalPiece = parseDraw(lastx,lasty,lastPieceP);
-			//chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, originalPiece);
+			CImg<unsigned char> originalPiece = parseDraw(lastx,lasty,lastPieceP);
+			chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, originalPiece);
 			//debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
+		}
 		}
 	else
 	{
