@@ -49,6 +49,7 @@ class Piece {
 		//Piece* pieceArray[32];
 		void setPosition(int x ,int y);
 		void setDied();
+		void setFirstMoved(){};
 		
 };
 
@@ -64,6 +65,7 @@ class Pawn : public Piece{
 		};
 		~Pawn(){};
 		bool moveLegal(int x, int y);	//checks if the move is allowed and if so, mutates position
+		void setFirstMoved();
 		void transformer();			//once across board, option to change
 };
 
@@ -99,6 +101,7 @@ class Rook : public Piece{
 		};
 		~Rook(){};
 		bool moveLegal(int x, int y);	//checks if the move is allowed and if so, mutates position
+		void setFirstMoved();
 };
 
 class Queen : public Piece{
@@ -122,4 +125,5 @@ class King : public Piece{
 		};
 		~King(){};
 		bool moveLegal(int x, int y);
+		void setFirstMoved();
 };

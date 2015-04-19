@@ -68,12 +68,12 @@ bool Pawn::moveLegal(int x, int y){ // fix en passant
 	int val1 = -1;
 	int val2 = -2;
 	
-	if(white){
+	if(!white){
 		val1 = abs(val1);
 		val2 = abs(val2);
 	}
 	
-	if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0])	//marks that the object has moved
+	if(firstMoved && move[1] - position[1] == val2 && position[0] == move[0] && !firstMoved)	//marks that the object has moved
 	{
 		return true;			
 		
@@ -101,6 +101,10 @@ bool Pawn::moveLegal(int x, int y){ // fix en passant
 		
 	return valid;
 		
+}
+
+void Pawn::setFirstMoved(){
+	firstMoved = true;
 }
 
 void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
@@ -169,9 +173,8 @@ bool Knight::moveLegal(int x, int y){
 	int moveSpaceHor = move[0] - position[0];
 	int moveSpaceVer = move[1] - position[1];
 	
-	if((abs(moveSpaceHor == 1 || moveSpaceHor == 2)) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3)
+	if((abs(moveSpaceHor) == 1 || abs(moveSpaceHor) == 2) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3)
 	{
-	
 		valid = true;
 	}
 	
@@ -206,6 +209,10 @@ bool Rook::moveLegal(int x, int y) {
 	
 	return valid;
 	
+}
+
+void Rook::setFirstMoved(){
+	firstMoved = true;
 }
 //----------------------------------------------------------------------------------------------------------------
 bool Queen::moveLegal(int x, int y) {
@@ -285,6 +292,10 @@ bool King::moveLegal(int x, int y) {
 	else cout<<"Brahhhhhhhhhhh you can't move dat";
 
 	return valid;
+}
+
+void King::setFirstMoved(){
+	firstMoved = true;
 }
 //----------------------------------------------------------------------------------------------------------------
 
