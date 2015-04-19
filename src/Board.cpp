@@ -36,12 +36,179 @@ void Board::setupPieceArray()
 			else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
 		}
 }
+bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Method that returns free as true or false
+	
+
+	int moveSpacesHor = moveX - positionX;
+	int moveSpacesVer = moveY - positionY;
+	bool free = true;
+	if (abs(moveSpacesHor) == abs(moveSpacesVer)) { //Checks if diagnol
+		if (moveSpacesHor == moveSpacesVer && moveSpacesHor > 0) {	//diagnol + +
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (returnPiece(positionX + i, positionY + i) != -1) {
+					free = false;
+				}
+			}
+		} else if (moveSpacesHor == moveSpacesVer && moveSpacesHor < 0) { //diagnol - -
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (returnPiece(positionX - i, positionY - i) != -1) {
+					free = false;
+				}
+			}
+		} else if (abs(moveSpacesHor) == moveSpacesVer) { //diagnol - +
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (returnPiece(positionX - i, positionY + i) != -1) {
+					free = false;
+				}
+			}
+		} else if (moveSpacesHor == abs(moveSpacesVer)) { //diagnol + -
+			for ( int i = 1; i<abs(moveSpacesHor); i++) {
+				if (returnPiece(positionX + i, positionY - i) != -1) {
+					free = false;
+				}
+			}
+		}
+	} else if ((moveSpacesHor == 0) && (moveSpacesVer > 0)) { //Vertical +
+		for ( int i = 1; i<moveSpacesVer; i++) {
+			if (returnPiece(positionX, positionY + i) != -1) {
+					free = false;
+				}
+			}
+	} else if ((moveSpacesHor == 0) && (moveSpacesVer < 0)) { //Vertical -
+		for ( int i = 1; i<abs(moveSpacesVer); i++) {
+			if (returnPiece(positionX, positionY - i) != -1) {
+					free = false;
+				}
+			}
+	} else if ((moveSpacesVer == 0) && (moveSpacesHor > 0)) { //Horizontal +
+		for ( int i = 1; i<moveSpacesHor; i++) {
+			if (returnPiece(positionX + 1, positionY) != -1) {
+					free = false;
+				}
+			}
+	} else if ((moveSpacesVer == 0) && (moveSpacesHor < 0)) { //Horizontal -
+		for ( int i = 1; i<abs(moveSpacesHor); i++) {
+			if (returnPiece(positionX - 1, positionY) != -1) {
+				free = false;
+				}
+			}
+	}
+	
+	return free;
+}
+
+bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY)
+{
+	if(newX == -2 && turn) //original array, white is in check
+	{
+		for(int i = 0; i < 32; i++)
+		{
+			if(i != 30)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+				{
+					//isCheckmate();
+					return true;
+				}
+			}
+		}
+	}
+	
+	else if(newX == -2 && !turn) //original array, black is in check
+	{
+		for(int i = 0; i < 32; i++)
+		{
+			if(i != 31)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+				{
+					//isCheckmate();
+					return true;
+				}
+			}
+		}
+	}
+	
+	else if(newX != -2 && turn) //hypo array, white is in check
+	{
+		
+		int pieceIndex;
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
+			{
+				pieceIndex = i;
+				pieceArray[i]->setPosition(newX, newY);
+			}
+		}
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(i != 30 && pieceIndex != 30)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+			else if(i != 30 && pieceIndex == 30)
+			{
+				if(pieceArray[i]->moveLegal(newX, newY, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+		}
+		
+		pieceArray[pieceIndex]->setPosition(oldX, oldY);
+		
+	}
+	else if(newX != -2 && !turn) //hypo array, black is in check
+	{
+		int pieceIndex;
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
+			{
+				pieceIndex = i;
+				pieceArray[i]->setPosition(newX, newY);
+			}
+		}
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(i != 31 && pieceIndex != 31)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+			else if(i != 31 && pieceIndex == 31)
+			{
+				if(pieceArray[i]->moveLegal(newX, newY, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+		}
+		
+		pieceArray[pieceIndex]->setPosition(oldX, oldY);
+		
+	}
+}
 
 //Board Methods defined
 void Board::updateBoard()
 {
 	chessboard.display(main_disp);//update board
 	debugbox.display(debug_disp);
+
+	if(turn == true) //was blacks turn
+	{
+		if(isCheck(pieceArray[30]->getX(), pieceArray[30]->getY(), -2, -2, -2, -2))
+			check = true;
+		
+	}
+	else if(turn == false) //was whites turn
+	{
+		if(isCheck(pieceArray[31]->getX(), pieceArray[31]->getY(), -2, -2, -2, -2))
+			check = true;
+	}
 }
 
 int Board::returnPiece(int x, int y)//returns piece at spot on board given
@@ -206,69 +373,7 @@ void Board::setup()
 	updateBoard();
 }
 
-bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Method that returns free as true or false
-	
 
-	int moveSpacesHor = moveX - positionX;
-	int moveSpacesVer = moveY - positionY;
-	bool free = true;
-	if (abs(moveSpacesHor) == abs(moveSpacesVer)) { //Checks if diagnol
-		if (moveSpacesHor == moveSpacesVer && moveSpacesHor > 0) {	//diagnol + +
-			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (returnPiece(positionX + i, positionY + i) != -1) {
-					free = false;
-				}
-			}
-		} else if (moveSpacesHor == moveSpacesVer && moveSpacesHor < 0) { //diagnol - -
-			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (returnPiece(positionX - i, positionY - i) != -1) {
-					free = false;
-				}
-			}
-		} else if (abs(moveSpacesHor) == moveSpacesVer) { //diagnol - +
-			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (returnPiece(positionX - i, positionY + i) != -1) {
-					free = false;
-				}
-			}
-		} else if (moveSpacesHor == abs(moveSpacesVer)) { //diagnol + -
-			for ( int i = 1; i<abs(moveSpacesHor); i++) {
-				if (returnPiece(positionX + i, positionY - i) != -1) {
-					free = false;
-				}
-			}
-		}
-	} else if ((moveSpacesHor == 0) && (moveSpacesVer > 0)) { //Vertical +
-		for ( int i = 1; i<moveSpacesVer; i++) {
-			if (returnPiece(positionX, positionY + i) != -1) {
-					free = false;
-				}
-			}
-	} else if ((moveSpacesHor == 0) && (moveSpacesVer < 0)) { //Vertical -
-		for ( int i = 1; i<abs(moveSpacesVer); i++) {
-			if (returnPiece(positionX, positionY - i) != -1) {
-					free = false;
-				}
-			}
-	} else if ((moveSpacesVer == 0) && (moveSpacesHor > 0)) { //Horizontal +
-		for ( int i = 1; i<moveSpacesHor; i++) {
-			if (returnPiece(positionX + 1, positionY) != -1) {
-					free = false;
-				}
-			}
-	} else if ((moveSpacesVer == 0) && (moveSpacesHor < 0)) { //Horizontal -
-		for ( int i = 1; i<abs(moveSpacesHor); i++) {
-			if (returnPiece(positionX - 1, positionY) != -1) {
-				free = false;
-				}
-			}
-	}
-	if(free)
-		debugbox.fill(0).draw_text(0, 0, "No Collision", green);
-	else
-		debugbox.fill(0).draw_text(0, 0, "Collision", green);
-	return free;
-}
 
 
 void Board::moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7 only call if your move is valid you dummy
@@ -367,8 +472,28 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			else destPieceColor = 3;
 			
 			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
-			collisionLegal = collision(srcx, srcy, destx, desty);			
-
+			collisionLegal = collision(destx, desty, srcx, srcy);		
+/*
+		
+			if(typeMoveLegal && collisionLegal && check && turn) //legal move, in check, white turn
+			{
+				if(isCheck(pieceArray[WHITEKING]->getX(), pieceArray[WHITEKING]->getY(), destx, desty, srcx, srcy))
+				{
+					typeMoveLegal = false;
+				}
+				else
+					check = false;
+			}
+			else if(typeMoveLegal && collisionLegal && check && !turn) //legal move, in check, black turn
+			{
+				if(isCheck(pieceArray[BLACKKING]->getX(), pieceArray[BLACKKING]->getY(), destx, desty, srcx, srcy))
+				{
+					typeMoveLegal = false;
+				}
+				else
+					check = false;
+			}	
+	*/
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 
@@ -384,6 +509,7 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 				return true;
 			}
 		}
+
 		return false;
 	
 		
@@ -392,8 +518,10 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 bool Board::handleClick(int p, int x, int y, bool select)
 {
 		if(lastp == p)
-	{
+	{	
+		CImg<unsigned char> originalPiece = parseDraw(lastx,lasty,lastPieceP);
 		lastp = BLANK;
+		chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, originalPiece);
 		debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
 		return false;
 	}
@@ -402,17 +530,28 @@ bool Board::handleClick(int p, int x, int y, bool select)
 		//check what piece to draw
 		CImg<unsigned char> piecetodraw = parseDraw(x,y,lastp);//Last p is the piece to move
 		lastp = BLANK;//overwrite last piece to prevent double drawing
+		
 		//CHECK VALID MOVE FIRST
 		if(validMove(lastx,lasty,x,y))
 			moveDraw(piecetodraw,lastx,lasty,x,y);
 		else
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
-	}
+			//CImg<unsigned char> originalPiece = parseDraw(lastx,lasty,lastPieceP);
+			//chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, originalPiece);
+			//debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
+		}
 	else
 	{
 		lastx = x;
 		lasty = y;
+		if(p != BLANK)
+			lastPieceP = p;
 		lastp = p;
+
+		CImg<unsigned char> outlines;
+		outlines = selection;
+		chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, outlines);
+		chessboard.draw_image(lastx*PIXELSQUARESIZE + 95, lasty*PIXELSQUARESIZE, outlines);
 		debugbox.fill(0).draw_text(0, 0, "PIECE SELECTED.", green);
 	}
 	return true;

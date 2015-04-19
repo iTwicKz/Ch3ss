@@ -25,7 +25,15 @@ void Piece::setDied(){
 	dead = true;
 }
 
+int Piece::getX()
+{
+	return position[0];
+}
 
+int Piece::getY()
+{
+	return position[1];
+}
 
 //----------------------------------------------------------------------------------------------------------------
 

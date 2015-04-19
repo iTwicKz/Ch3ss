@@ -52,6 +52,9 @@ class Piece {
 		void setPosition(int x ,int y);
 		void setDied();
 		virtual void setFirstMoved(){};
+
+		int getX();
+		int getY();
 		
 };
 
