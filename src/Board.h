@@ -82,11 +82,15 @@ CImg<unsigned char> lblank(IMAGEPATH "Blank-Light.jpg");
 CImg<unsigned char> dblank(IMAGEPATH "Blank-Dark.jpg");
 
 CImg<unsigned char> selection(IMAGEPATH "selection.jpg");
+
 CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0); //debug box
+
+CImg<unsigned char> dialogueBox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);
 
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
 CImgDisplay debug_disp(debugbox,"Debug");
+CImgDisplay dial_disp(dialogueBox, "Activity");
 
 //Boardarray 
 int boardarray[8][8];
