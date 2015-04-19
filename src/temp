@@ -1,0 +1,134 @@
+
+UPDATE BOARD
+if(turn == true) //was blacks turn
+	{
+		if(isCheck(pieceArray[30]->getX(), pieceArray[30]->getY(), -2, -2, -2, -2))
+			check = true;
+		
+	}
+	else if(turn == false) //was whites turn
+	{
+		if(isCheck(pieceArray[31]->getX(), pieceArray[31]->getY(), -2, -2, -2, -2))
+			check = true;
+	}
+	
+	
+	VALID MOVE
+		typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty); 
+			collisionLegal = collision(srcx, srcy, destx, desty);
+			
+			if(typeMoveLegal && collisionLegal && check && turn) //legal move, in check, white turn
+			{
+				if(isCheck(pieceArray[30]->getX(), pieceArray[30]->getY(), destx, dest y, srcx, srcy))
+				{
+					typeMoveLegal = false;
+				}
+				else
+					check = false;
+			}
+			else if(typeMoveLegal && collisionLegal && check && !turn) //legal move, in check, black turn
+			{
+				if(isCheck(pieceArray[30]->getX(), pieceArray[30]->getY(), destx, desty, srcx, srcy))
+				{
+					typeMoveLegal = false;
+				}
+				else
+					check = false;
+			}
+			
+			
+			IS CHECK
+	bool isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY)
+{
+	if(kingX == -2 && turn) //original array, white is in check
+	{
+		for(int i = 0; int < 32; i++)
+		{
+			if(i != 30)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+				{
+					isCheckmate();
+					return true;
+				}
+			}
+		}
+	}
+	
+	else if(kingX == -2 && !turn) //original array, black is in check
+	{
+		for(int i = 0; int < 32; i++)
+		{
+			if(i != 31)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+				{
+					isCheckmate();
+					return true;
+				}
+			}
+		}
+	}
+	
+	else if(newX != -2 && turn) //hypo array, white is in check
+	{
+		
+		int pieceIndex;
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
+			{
+				pieceIndex = i;
+				pieceArray[i]->setPosition(newX, newY);
+			}
+		}
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(i != 30 && pieceIndex != 30)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+			else if(i != 30 && pieceIndex == 30)
+			{
+				if(pieceArray[i]->moveLegal(newX, newY) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+		}
+		
+		pieceArray[pieceIndex]->setPosition(oldX, oldY);
+		
+	}
+	else if(newX != -2 && !turn) //hypo array, black is in check
+	{
+		int pieceIndex;
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
+			{
+				pieceIndex = i;
+				pieceArray[i]->setPosition(newX, newY);
+			}
+		}
+		
+		for(int i = 0; i < 32; i++)
+		{
+			if(i != 31 && pieceIndex != 31)
+			{
+				if(pieceArray[i]->moveLegal(kingX, kingY) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+			else if(i != 31 && pieceIndex == 31)
+			{
+				if(pieceArray[i]->moveLegal(newX, newY) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					return true;
+			}
+		}
+		
+		pieceArray[pieceIndex]->setPosition(oldX, oldY);
+		
+	}
+}
