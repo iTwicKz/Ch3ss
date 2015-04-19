@@ -543,10 +543,6 @@ void Board::setup()
 
 void Board::moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty)//x and y are 0-7 only call if your move is valid you dummy
 {
-	
-	//check for the special moves en passant or castling or queening
-	//Castling move was checked as valid in handleclick
-	
 	/*//Queening a pawn
 	else if((piece == blpawn && desty == 7) || (piece == bdpawn && desty == 0))
 	{
@@ -602,6 +598,35 @@ void Board::enPassant(bool *typeMoveLegal, int srcx, int srcy, int destx, int de
 			
 }	
 
+void Board::castling(bool *typeMoveLegal, int srcx, int srcy, int destx, int desty, int srcPiece){
+
+	if(srcPiece == 31 && srcx == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){
+		if(boardarray[5][srcy] == -1 && boardarray[6][srcy] == -1 && boardarray[7][srcy] == BLACKROOKTWO && pieceArray[BLACKROOKTWO]->getFirstMoved()){
+			pieceArray[BLACKROOKTWO]->setPosition(5, 0);
+			moveDraw(bdrook, 7, 0, 5, 0);
+			*typeMoveLegal = true;
+		}
+		if(boardarray[2][srcy] == -1 && boardarray[3][srcy] == -1 && boardarray[0][srcy] == BLACKROOK && pieceArray[BLACKROOK]->getFirstMoved()){
+			pieceArray[BLACKROOK]->setPosition(3, 0);
+			moveDraw(bdrook, 0, 0, 3, 0);
+			*typeMoveLegal = true;
+		}
+	}
+	//for white castle
+	if(srcPiece == 30 && srcx == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){
+		if(boardarray[5][7] == -1 && boardarray[6][7] == -1 && boardarray[7][7] == WHITEROOKTWO && pieceArray[WHITEROOKTWO]->getFirstMoved()){
+			pieceArray[WHITEROOKTWO]->setPosition(srcx, 5);
+			moveDraw(wlrook, 7, 7, 5, 7);
+			*typeMoveLegal = true;
+		}
+		if(boardarray[2][srcy] == -1 && boardarray[3][srcy] == -1 && boardarray[0][srcy] == WHITEROOK && pieceArray[WHITEROOK]->getFirstMoved()){
+			pieceArray[WHITEROOK]->setPosition(3, 7);
+			moveDraw(wlrook, 0, 7, 3, 7);
+			*typeMoveLegal = true;
+		}
+	}
+}
+
 bool Board::validMove(int srcx, int srcy, int destx, int desty)
 {
 		bool collisionLegal = false;
@@ -641,35 +666,11 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, destPiece); 
 			collisionLegal = collision(destx, desty, srcx, srcy);		
 
+			//CASTLING
+			if(srcPiece == 31 || srcPiece == 30)		
+				castling(&typeMoveLegal, srcx, srcy, destx, desty, srcPiece);
 
-			//for black castle
-			if(srcPiece == 31 && srcx == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){
-				if(boardarray[5][srcy] == -1 && boardarray[6][srcy] == -1 && boardarray[7][srcy] == BLACKROOKTWO && pieceArray[BLACKROOKTWO]->getFirstMoved()){
-					pieceArray[BLACKROOKTWO]->setPosition(5, 0);
-					moveDraw(bdrook, 7, 0, 5, 0);
-					typeMoveLegal = true;
-				}
-				if(boardarray[2][srcy] == -1 && boardarray[3][srcy] == -1 && boardarray[0][srcy] == BLACKROOK && pieceArray[BLACKROOK]->getFirstMoved()){
-					pieceArray[BLACKROOK]->setPosition(3, 0);
-					moveDraw(bdrook, 0, 0, 3, 0);
-					typeMoveLegal = true;
-				}
-			}
-			//for white castle
-			if(srcPiece == 30 && srcx == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){
-				if(boardarray[5][7] == -1 && boardarray[6][7] == -1 && boardarray[7][7] == WHITEROOKTWO && pieceArray[WHITEROOKTWO]->getFirstMoved()){
-					pieceArray[WHITEROOKTWO]->setPosition(srcx, 5);
-					moveDraw(wlrook, 7, 7, 5, 7);
-					typeMoveLegal = true;
-				}
-				if(boardarray[2][srcy] == -1 && boardarray[3][srcy] == -1 && boardarray[0][srcy] == WHITEROOK && pieceArray[WHITEROOK]->getFirstMoved()){
-					pieceArray[WHITEROOK]->setPosition(3, 7);
-					moveDraw(wlrook, 0, 7, 3, 7);
-					typeMoveLegal = true;
-				}
-			}
-
-		/*
+		
 			if(typeMoveLegal && collisionLegal && check && turn) //legal move, in check, white turn
 			{
 				if(isCheck(pieceArray[WHITEKING]->getX(), pieceArray[WHITEKING]->getY(), destx, desty, srcx, srcy))
@@ -689,8 +690,8 @@ bool Board::validMove(int srcx, int srcy, int destx, int desty)
 					check = false;
 			}	
 
-		*/
-			//bool* typePointer = typeMoveLegal;
+		
+			//EN PASSANT
 			if((srcPiece >= 0 && srcPiece <= 17))
 			//if((srcPiece >= 0 || srcPiece <= 17) && collisionLegal && sameTeam && checkMove)
 			{
@@ -749,9 +750,10 @@ bool Board::handleClick(int p, int x, int y, bool select)
 	}
 	else
 	{
+		if(p != BLANK){
 		lastx = x;
 		lasty = y;
-		if(p != BLANK)
+		
 			lastPieceP = p;
 		lastp = p;
 
@@ -760,6 +762,7 @@ bool Board::handleClick(int p, int x, int y, bool select)
 		chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, outlines);
 		chessboard.draw_image(lastx*PIXELSQUARESIZE + 95, lasty*PIXELSQUARESIZE, outlines);
 		debugbox.fill(0).draw_text(0, 0, "PIECE SELECTED.", green);
+		}
 	}
 	return true;
 }
