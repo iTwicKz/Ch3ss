@@ -52,7 +52,9 @@ class Piece {
 		void setPosition(int x ,int y);
 		void setDied();
 		virtual void setFirstMoved(){};
-
+		virtual void setPassantCount(int passantCount){};
+		virtual int getPassantCount(){};
+		bool getFirstMoved();
 		int getX();
 		int getY();
 		
@@ -64,13 +66,16 @@ class Pawn : public Piece{
 		
 
 	public:
+		int passantCount;
 		Pawn(bool white, int positionX, int positionY, int type = 0, string sprite = "PawnPic") : 
 			Piece(white, positionX, positionY, type, sprite){
-			//firstMoved = true;
+			passantCount = -1;
 		};
 		~Pawn(){};
 		bool moveLegal(int x, int y, int destPiece);	//checks if the move is allowed and if so, mutates position
 		void setFirstMoved();
+		void setPassantCount(int passantCount);
+		int getPassantCount();
 		//void transformer();			//once across board, option to change
 };
 
