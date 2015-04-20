@@ -1,5 +1,5 @@
 #include "CImg.h"
-#include "Piece.cpp"
+
 
 #ifndef IMAGEPATH
 #define IMAGEPATH "res/Default/"
@@ -85,12 +85,12 @@ CImg<unsigned char> selection(IMAGEPATH "selection.jpg");
 
 CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0); //debug box
 
-CImg<unsigned char> dialogueBox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);
+
 
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
 CImgDisplay debug_disp(debugbox,"Debug");
-CImgDisplay dial_disp(dialogueBox, "Activity");
+
 
 //Boardarray 
 int boardarray[8][8];
@@ -121,14 +121,16 @@ class Board
 		int getMoveCount();
 		CImg<unsigned char> parseDraw(int xx, int yy, int pp);
 		void setup();
-		void moveDraw(CImg<unsigned char> piece, int srcx, int srcy, int destx, int desty);
+		void moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, int desty);
 		bool handleClick(int p, int x, int y, bool select);
 		bool collision(int moveX, int moveY, int positionX, int positionY);
-		bool validMove(int srcx, int srcy, int destx, int desty);
 
+		bool validMove(int srcX, int srcY, int destx, int desty);
+		void enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece, bool whiteColorsrc, int srcPieceColor);
+		void castling(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece);
 		bool isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY);
+
 		//bool check = false;
 
 };
-
 
