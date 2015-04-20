@@ -1,7 +1,7 @@
 
 #include "Piece.cpp"
 
-void Board::setupPieceArray()
+void Board::setupPieceArray() //Sets up Pieces
 {
 	for(int index = 0; index < 32; index++)
 		{	
@@ -36,7 +36,7 @@ void Board::setupPieceArray()
 			else if(index == 31) pieceArray[index] = new King(false, 4, 0);					//black king
 		}
 }
-bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Method that returns free as true or false
+bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Method that returns whether their are pieces in between source piece and destination spot
 	
 
 	int moveSpacesHor = moveX - positionX;
@@ -82,13 +82,13 @@ bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Me
 			}
 	} else if ((moveSpacesVer == 0) && (moveSpacesHor > 0)) { //Horizontal +
 		for ( int i = 1; i<moveSpacesHor; i++) {
-			if (returnPiece(positionX + 1, positionY) != -1) {
+			if (returnPiece(positionX + i, positionY) != -1) {
 					free = false;
 				}
 			}
 	} else if ((moveSpacesVer == 0) && (moveSpacesHor < 0)) { //Horizontal -
 		for ( int i = 1; i<abs(moveSpacesHor); i++) {
-			if (returnPiece(positionX - 1, positionY) != -1) {
+			if (returnPiece(positionX - i, positionY) != -1) {
 				free = false;
 				}
 			}
@@ -97,11 +97,11 @@ bool Board::collision(int moveX, int moveY, int positionX, int positionY) { //Me
 	return free;
 }
 
-bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY)
+bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY)  //Determines whether the king is in check
 {
-	if(newX == -2 && turn) //original array, white is in check
+	if(newX == -2 && turn) 
 	{
-		for(int i = 0; i < 32; i++)
+		for(int i = 0; i < 32; i++)		//Checks if white king is in check after black has moved
 		{
 			int xNum = -2;
 			int yNum = -2;
@@ -111,7 +111,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						xNum = pieceArray[i]->getX();
 						yNum = pieceArray[i]->getY();
 						tempI = pieceArray[i]->getPieceRule();
-						//i = pieceArray[i]->getPieceRule();
+						
 					}
 				}
 
@@ -121,7 +121,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 				{
 					if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					{
-					//isCheckmate();
+					
 					return true;
 					}
 				}
@@ -129,7 +129,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 				{
 					if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					{
-						//isCheckmate();
+						
 						return true;
 					}
 				}
@@ -137,9 +137,9 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		}
 	}
 	
-	else if(newX == -2 && !turn) //original array, black is in check
+	else if(newX == -2 && !turn) 
 	{
-		for(int i = 0; i < 32; i++)
+		for(int i = 0; i < 32; i++) //Checks if black king is in check after white has moved
 		{
 			int xNum = -2;
 			int yNum = -2;
@@ -149,7 +149,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						xNum = pieceArray[i]->getX();
 						yNum = pieceArray[i]->getY();
 						tempI = pieceArray[i]->getPieceRule();
-						//i = pieceArray[i]->getPieceRule();
+						
 					}
 				}
 			if((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26)
@@ -158,7 +158,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 				{
 					if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					{
-						//isCheckmate();
+						
 						return true;
 					}
 				}
@@ -166,7 +166,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 				{
 					if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
 					{
-						//isCheckmate();
+						
 						return true;
 					}
 				}
@@ -175,39 +175,39 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		}
 	}
 	
-	else if(newX != -2 && turn) //hypo array, white is in check
+	else if(newX != -2 && turn) //White is in check and this sees if white player's move will move them out of check
 	{
-		if(boardarray[newX][newY] != -1)
+		if(boardarray[newX][newY] != -1) //White player defends by taking the piece that put it's king in check
 		{
-			int queenIndex; //return to newX if fail
-			int knightIndex; //return to oldX if fail
-			for(int i = 0; i < 32; i++) //gets rid of queen
+			int queenIndex; //Index to save attacker's spot
+			int knightIndex; //Index to save defender's spot
+			for(int i = 0; i < 32; i++) //gets rid of attacker hypothetically
 			{	
 				if(pieceArray[i]->getX() == newX && pieceArray[i]->getY() == newY)
 				{
 					queenIndex = i;
 					pieceArray[i]->setPosition(-2, -20);
-					//break;
+					
 				}
 			}
-			for(int i = 0; i < 32; i++) //puts knight in queen spot
+			for(int i = 0; i < 32; i++) //Puts defender in attacker's spot 
 			{
 				if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
 				{
 					knightIndex = i;
 					pieceArray[i]->setPosition(newX, newY);
-					//break;
+					
 				}
 			}
-			int knightBoardIndex;
+			int knightBoardIndex; //creates hypothetical board
 			int queenBoardIndex;
 			knightBoardIndex = boardarray[oldX][oldY];
 			queenBoardIndex = boardarray[newX][newY];
 			boardarray[newX][newY] = knightBoardIndex;
 			boardarray[oldX][oldY] = -1;
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 32; i++) //Checks every piece to see if they can attack the king after white has made its move
 			{
-				int xNum = -2;
+				int xNum = -2; //special instance for transformed pawns
 				int yNum = -2;
 				int tempI = -2;
 				if(i >= 8 && i <= 15){
@@ -215,11 +215,11 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						xNum = pieceArray[i]->getX();
 						yNum = pieceArray[i]->getY();
 						tempI = pieceArray[i]->getPieceRule();
-						//i = pieceArray[i]->getPieceRule();
+						
 						}
 					}
 
-				if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && i != queenIndex && knightIndex != 30)
+				if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && i != queenIndex && knightIndex != 30) //king wasn't the one that moved
 				{
 					if(tempI != -2)
 					{
@@ -244,7 +244,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						}
 					}
 				}
-				else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && i != queenIndex && knightIndex == 30)
+				else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && i != queenIndex && knightIndex == 30) //king was the one that moved
 				{
 					if(tempI != -2)
 					{
@@ -271,15 +271,14 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 
 				}
 			}
-			//pieceArray[queenIndex]->setPosition(newX, newY);
-			//pieceArray[knightIndex]->setPosition(oldX,oldY);
-			boardarray[oldX][oldY] = knightBoardIndex;
+		
+			boardarray[oldX][oldY] = knightBoardIndex; //Resets hypotheticals
 			boardarray[newX][newY] = queenBoardIndex;
 		}
 		
-		else
+		else //white made a move that prevents check by blocking the attacker or moving the king out of the way
 		{
-			int pieceIndex;
+			int pieceIndex; //saves piece spot
 			for(int i = 0; i < 32; i++)
 			{
 				if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
@@ -289,11 +288,11 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 					
 				}
 			}
-			int boardIndex;
+			int boardIndex;	//creates hypothetical board
 			boardIndex = boardarray[oldX][oldY];
 			boardarray[newX][newY] = pieceIndex;
 			boardarray[oldX][oldY] = -1;
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 32; i++) //Checks every piece to see if they can attack the king after white has made its move
 			{
 				int xNum = -2;
 				int yNum = -2;
@@ -303,10 +302,10 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						xNum = pieceArray[i]->getX();
 						yNum = pieceArray[i]->getY();
 						tempI = pieceArray[i]->getPieceRule();
-						//i = pieceArray[i]->getPieceRule();
+					
 						}
 					}
-				if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex != 30)
+				if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex != 30) //King didn't move
 				{
 					if(tempI != -2)
 					{
@@ -329,7 +328,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						}
 					}
 				}
-				else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex == 30)
+				else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex == 30) //King did move
 				{
 					if(tempI != -2)
 					{
@@ -354,7 +353,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 				}
 			}
 			//pieceArray[pieceIndex]->setPosition(oldX, oldY);
-			boardarray[oldX][oldY] = boardIndex;
+			boardarray[oldX][oldY] = boardIndex; //Resets hypotheticals
 			boardarray[newX][newY] = -1;
 
 		}
@@ -362,13 +361,13 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 		
 	}
 
-	else if(newX != -2 && !turn) //hypo array, black is in check
+	else if(newX != -2 && !turn) //Black is in check and tries to save itself by taking attacking piece
 	{
-		if(boardarray[newX][newY] != -1)
+		if(boardarray[newX][newY] != -1) //whtie piece took attacking piece
 		{
-			int queenIndex; //return to newX if fail
-			int knightIndex; //return to oldX if fail
-			for(int i = 0; i < 32; i++) //gets rid of queen
+			int queenIndex; //sets up hypothetical
+			int knightIndex; 
+			for(int i = 0; i < 32; i++) //gets rid of attacker hypothetically
 			{
 				if(pieceArray[i]->getX() == newX && pieceArray[i]->getY() == newY)
 				{
@@ -377,7 +376,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 					//break;
 				}
 			}
-			for(int i = 0; i < 32; i++) //puts knight in queen spot
+			for(int i = 0; i < 32; i++) //puts defender in attacker spot hypothetically
 			{
 				if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
 				{
@@ -386,15 +385,15 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 					//break;
 				}
 			}
-			int knightBoardIndex;
+			int knightBoardIndex; //sets up hypothetical board
 			int queenBoardIndex;
 			knightBoardIndex = boardarray[oldX][oldY];
 			queenBoardIndex = boardarray[newX][newY];
 			boardarray[newX][newY] = knightBoardIndex;
 			boardarray[oldX][oldY] = -1;
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 32; i++) //checks every piece to see if king is still in check
 			{
-				int xNum = -2;
+				int xNum = -2;	//special situation for transformed pawns
 				int yNum = -2;
 				int tempI = -2;
 				if(i >= 0 && i <= 7){
@@ -405,7 +404,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						//i = pieceArray[i]->getPieceRule();
 						}
 					}
-				if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && /*i != queenIndex &&*/ knightIndex != 31)
+				if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && /*i != queenIndex &&*/ knightIndex != 31) //King did not move
 				{
 					if(tempI != -2)
 					{
@@ -432,7 +431,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						}
 					}
 				}
-				else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && i != queenIndex && knightIndex == 31)
+				else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && i != queenIndex && knightIndex == 31) //King moved
 				{
 					if(tempI != -2)
 					{
@@ -462,14 +461,14 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			}
 			//pieceArray[queenIndex]->setPosition(newX, newY);
 			//pieceArray[knightIndex]->setPosition(oldX,oldY);
-			boardarray[oldX][oldY] = knightBoardIndex;
+			boardarray[oldX][oldY] = knightBoardIndex; //resets hypothetical
 			boardarray[newX][newY] = queenBoardIndex;
 		}
-		else
+		else //white piece moves to block check, or kings moves out of check
 		{
 		
-			int pieceIndex;
-			for(int i = 0; i < 32; i++)
+			int pieceIndex; //creates hypothetical piece
+			for(int i = 0; i < 32; i++) 
 			{
 				if(pieceArray[i]->getX() == oldX && pieceArray[i]->getY() == oldY)
 				{
@@ -478,13 +477,13 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 					break;
 				}
 			}
-			int boardIndex;
+			int boardIndex;	//creates hypothetical board
 			boardIndex = boardarray[oldX][oldY];
 			boardarray[newX][newY] = boardIndex;
 			boardarray[oldX][oldY] = -1;
-			for(int i = 0; i < 32; i++)
+			for(int i = 0; i < 32; i++) //checks pieces to see if king is in check
 			{
-				int xNum = -2;
+				int xNum = -2; //special case for transformed pawns
 				int yNum = -2;
 				int tempI = -2;
 				if(i >= 0 && i <= 7){
@@ -495,7 +494,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						//i = pieceArray[i]->getPieceRule();
 						}
 					}
-				if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex != 31)
+				if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex != 31) //king didn't move
 				{
 					if(tempI != -2)
 					{
@@ -518,7 +517,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 						}
 					}
 				}
-				else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex == 31)
+				else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex == 31) //king moved
 				{
 					if(tempI != -2)
 					{
@@ -546,7 +545,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			
 			
 			//pieceArray[pieceIndex]->setPosition(oldX, oldY);
-			boardarray[oldX][oldY] = boardIndex;
+			boardarray[oldX][oldY] = boardIndex; //resets hypothetical 
 			boardarray[newX][newY] = -1;
 		}
 		
@@ -556,27 +555,27 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 	return false;
 }
 
-//Board Methods defined
-void Board::updateBoard()
+//Board Methods defined 
+void Board::updateBoard() //updates the board display after pieces have been drawn
 {
 	chessboard.display(main_disp);//update board
 	debugbox.display(debug_disp);
 
-	if(turn == true) //was blacks turn
+	if(turn == true) //was blacks turn, checks for check
 	{
 		if(isCheck(pieceArray[30]->getX(), pieceArray[30]->getY(), -2, -2, -2, -2))
 		{
 			check = true;
-			debugbox.fill(0).draw_text(0,0, "CHECK !", green);
+			debugbox.fill(0).draw_text(0,0, "CHECK!", green);
 		}
 		
 	}
-	else if(turn == false) //was whites turn
+	else if(turn == false) //was whites turn, checks for check
 	{
 		if(isCheck(pieceArray[31]->getX(), pieceArray[31]->getY(), -2, -2, -2, -2))
 		{
 			check = true;
-			debugbox.fill(0).draw_text(0,0, "CHECK !", green);
+			debugbox.fill(0).draw_text(0,0, "CHECK!", green);
 		}
 	}
 }
@@ -663,16 +662,14 @@ CImg<unsigned char> Board::parseDraw(int xx, int yy, int pp)//draw light pieces 
 	return(piece);
 }
 
-void Board::setup()
+void Board::setup() //set up board 
 {
-	
-	//setup board
-	//for painting
+
 	for(int i = 0; i < 8; i++)
 		for(int j = 0; j < 8; j++)
 			boardarray[i][j] = BLANK;
 	
-	//white
+	//white pieces
 	chessboard.draw_image(0,7*PIXELSQUARESIZE,wdrook);
 	boardarray[0][7] = WHITEROOK;
 	chessboard.draw_image(1*PIXELSQUARESIZE,7*PIXELSQUARESIZE,wlknight);
@@ -706,7 +703,7 @@ void Board::setup()
 	chessboard.draw_image(7*PIXELSQUARESIZE,6*PIXELSQUARESIZE,parseDraw(7,6,WHITEPAWN));
 	boardarray[7][6] = WHITEPAWNEIGHT;
 		
-	//black
+	//black pieces
 	chessboard.draw_image(0,0,blrook);
 	boardarray[0][0] = BLACKROOK;
 	chessboard.draw_image(1*PIXELSQUARESIZE,0,bdknight);
@@ -743,17 +740,9 @@ void Board::setup()
 	updateBoard();
 }
 
-void Board::moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, int desty)//x and y are 0-7 only call if your move is valid you dummy
+void Board::moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, int desty)//called if move is valid to draw pieces
 {
-	/*//Queening a pawn
-	else if((piece == blpawn && desty == 7) || (piece == bdpawn && desty == 0))
-	{
-		//
-	}
-	else if((piece == wlpawn && desty == 0) || (piece == wdpawn && desty == 0))
-	{
-		//
-	}*/
+
 
 	if(boardarray[srcX][srcY] >= 0 && boardarray[srcX][srcY] <= 15){
 		if(pieceArray[boardarray[srcX][srcY]]->getPawnTrans()){
@@ -761,7 +750,7 @@ void Board::moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, i
 			piece = piecetodraw;
 		}
 	}
-	chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);
+	chessboard.draw_image(destx*PIXELSQUARESIZE, desty*PIXELSQUARESIZE, piece);//draws piece
 	
 	chessboard.draw_image(srcX*PIXELSQUARESIZE, srcY*PIXELSQUARESIZE,parseDraw(srcX,srcY,BLANK));
 	
@@ -769,43 +758,43 @@ void Board::moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, i
 	{
 		pieceArray[boardarray[destx][desty]]->setPosition(-2, -20);
 	}
-	pieceArray[boardarray[srcX][srcY]]->setPosition(destx, desty);
+	pieceArray[boardarray[srcX][srcY]]->setPosition(destx, desty);//updates positions
 	boardarray[destx][desty] = boardarray[srcX][srcY];//move piece to new position
 	boardarray[srcX][srcY] = BLANK;//override old one
 	updateBoard();
 }
 
-void Board::castling(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece){
+void Board::castling(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece){ //special move for castling 
 
-	if(srcPiece == 31 && srcX == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){
+	if(srcPiece == 31 && srcX == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){ //black castling, split for both sides
 		if(boardarray[5][srcY] == -1 && boardarray[6][srcY] == -1 && boardarray[7][srcY] == BLACKROOKTWO && pieceArray[BLACKROOKTWO]->getFirstMoved()){
-			pieceArray[BLACKROOKTWO]->setPosition(5, 0);
+			//pieceArray[BLACKROOKTWO]->setPosition(5, 0);
 			moveDraw(bdrook, 7, 0, 5, 0);
 
 			*typeMoveLegal = true;
 		}
 		if(boardarray [1][srcY] == -1 && boardarray[2][srcY] == -1 && boardarray[3][srcY] == -1 && boardarray[0][srcY] == BLACKROOK && pieceArray[BLACKROOK]->getFirstMoved()){
-			pieceArray[BLACKROOK]->setPosition(3, 0);
+			//pieceArray[BLACKROOK]->setPosition(3, 0);
 			moveDraw(bdrook, 0, 0, 3, 0);
 			*typeMoveLegal = true;
 		}
 	}
-	//for white castle
-	if(srcPiece == 30 && srcX == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){
+	
+	if(srcPiece == 30 && srcX == 4 && (destx == 6 || destx == 2) && pieceArray[srcPiece]->getFirstMoved()){ //white castling, split for both sides
 		if(boardarray[5][7] == -1 && boardarray[6][7] == -1 && boardarray[7][7] == WHITEROOKTWO && pieceArray[WHITEROOKTWO]->getFirstMoved()){
-			pieceArray[WHITEROOKTWO]->setPosition(srcX, 5);
+			//pieceArray[WHITEROOKTWO]->setPosition(srcX, 5);
 			moveDraw(wlrook, 7, 7, 5, 7);
 			*typeMoveLegal = true;
 		}
 		if(boardarray [1][srcY] == -1 && boardarray[2][srcY] == -1 && boardarray[3][srcY] == -1 && boardarray[0][srcY] == WHITEROOK && pieceArray[WHITEROOK]->getFirstMoved()){
-			pieceArray[WHITEROOK]->setPosition(3, 7);
+			//pieceArray[WHITEROOK]->setPosition(3, 7);
 			moveDraw(wlrook, 0, 7, 3, 7);
 			*typeMoveLegal = true;
 		}
 	}
 }
 
-void Board::enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece, bool whiteColorsrc, int srcPieceColor){
+void Board::enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece, bool whiteColorsrc, int srcPieceColor){ //special move for en passant
 			
 	if(typeMoveLegal && abs(srcY - desty) == 2)
 	{
@@ -815,7 +804,7 @@ void Board::enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int de
 	{
 		int val1 = -1;
 		if(whiteColorsrc) val1 = 1;
-		if(boardarray[destx][desty+val1] != -1)
+		if(boardarray[destx][desty+val1] != -1) //determines if pawn has only moved once, and it's on the next turn, and moves up twice - conditions for en passant
 		{
 			int whiteBack = -1;
 			bool whetherWhite = true;
@@ -832,7 +821,7 @@ void Board::enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int de
 					if(moveCount == pieceArray[boardarray[destx][desty + val1]]->getPassantCount() && (whiteBack != srcPieceColor))
 					{
 						*typeMoveLegal = true;
-						moveDraw(dblank, destx, desty + val1, destx, desty + val1);
+						moveDraw(dblank, destx, desty + val1, destx, desty + val1); //move legal, sends it for drawing
 					}
 				}
 			}
@@ -841,7 +830,7 @@ void Board::enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int de
 			
 }	
 
-bool Board::validMove(int srcX, int srcY, int destx, int desty)
+bool Board::validMove(int srcX, int srcY, int destx, int desty) //determines if move is valid
 {
 		bool collisionLegal = false;
 		bool typeMoveLegal = false;
@@ -849,7 +838,7 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 
 		int idPiece = boardarray[srcX][srcY];
 		int srcPiece = idPiece;
-		if(srcPiece >= 0 && srcPiece <= 15)
+		if(srcPiece >= 0 && srcPiece <= 15) //special condition for pawn transformations
 		{
 			if(pieceArray[srcPiece]->getPawnTrans())
 			{
@@ -858,7 +847,7 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 
 		}
 		
-		int destPiece = boardarray[destx][desty];
+		int destPiece = boardarray[destx][desty]; //neccessary variables
 		int srcPieceColor = 0;
 		int destPieceColor = 0;
 		bool whiteColorsrc = pieceArray[srcPiece]->getWhite();
@@ -866,12 +855,12 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 		bool checkMove = true;
 		int colorTurn = 0;
 
-		if(turn)
+		if(turn)  //sets piece color, true is white
 			colorTurn = 1;
 		else
 			colorTurn = 2;
 
-		if(whiteColorsrc) srcPieceColor = 1;
+		if(whiteColorsrc) srcPieceColor = 1; 
 			else srcPieceColor = 2;
 
 		if(colorTurn == srcPieceColor){					//checks for whose turn it is
@@ -888,15 +877,15 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 			
-			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, srcX, srcY, destPiece); //SRCPIECE
+			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, srcX, srcY, destPiece); 
 			collisionLegal = collision(destx, desty, srcX, srcY);		
 
-			//CASTLING
-			if(srcPiece == 31 || srcPiece == 30)		
+			
+			if(srcPiece == 31 || srcPiece == 30) //special instance for castling
 				castling(&typeMoveLegal, srcX, srcY, destx, desty, srcPiece);
 
 		
-			if(typeMoveLegal && collisionLegal && turn) //legal move, in check, white turn
+			if(typeMoveLegal && collisionLegal && turn) //legal move, white turn, checks if king is in check
 			{
 				if(isCheck(pieceArray[WHITEKING]->getX(), pieceArray[WHITEKING]->getY(), destx, desty, srcX, srcY))
 				{
@@ -905,11 +894,11 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 				else
 					check = false;
 			}
-			else if(typeMoveLegal && collisionLegal && !turn) //legal move, in check, black turn
+			else if(typeMoveLegal && collisionLegal && !turn) //legal move, black turn, checks if king is in check
 			{
 				if(isCheck(pieceArray[BLACKKING]->getX(), pieceArray[BLACKKING]->getY(), destx, desty, srcX, srcY))
 				{
-					checkMove = false;
+					checkMove = false;//sets valid move to false if king is still hypothetically in check, preventing your move from happening
 				}
 				else
 					check = false;
@@ -926,7 +915,7 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 			if(srcPiece >= 20 && srcPiece <= 23)
 				collisionLegal = true;
 	
-			if(typeMoveLegal && collisionLegal && sameTeam && checkMove)
+			if(typeMoveLegal && collisionLegal && sameTeam && checkMove)//everything is true - valid move
 			{
 				if(srcPiece >= 0 && srcPiece <= 15){			//checks if that pawn is moved to other side
 					if(whiteColorsrc && desty == 0){			//for white peices
@@ -945,14 +934,14 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 			}
 		}
 
-		return false;
+		return false; //false if move not valid
 	
 		
 }
 
-bool Board::handleClick(int p, int x, int y, bool select)
+bool Board::handleClick(int p, int x, int y, bool select) //takes in player via clicks
 {
-	if(lastp == p)
+	if(lastp == p) //if player re-clicks same piece, this deselects it
 	{	
 		CImg<unsigned char> originalPiece = parseDraw(lastx,lasty,lastPieceP);
 		int srcPiece = boardarray[lastx][lasty];
@@ -967,22 +956,22 @@ bool Board::handleClick(int p, int x, int y, bool select)
 		lastp = BLANK;
 		chessboard.draw_image(lastx*PIXELSQUARESIZE, lasty*PIXELSQUARESIZE, originalPiece);
 		debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
-		return false;
+		return false; //returns false to main, preventing moving your piece to the same spot which would switch turns if this returned true
 	}
-	else if(select && lastp != BLANK)
+	else if(select && lastp != BLANK) //actual movement
 	{
 		//check what piece to draw
 		CImg<unsigned char> piecetodraw = parseDraw(x,y,lastp);//Last p is the piece to move
 		lastp = BLANK;//overwrite last piece to prevent double drawing
 		
-		//CHECK VALID MOVE FIRST
+		//checks if valid move, then draws it
 		if(validMove(lastx,lasty,x,y))
 		{
 			moveDraw(piecetodraw,lastx,lasty,x,y);
 			lastPieceP = BLANK;
 		}
 		
-		else
+		else //transform conditions
 		{
 			debugbox.fill(0).draw_text(0, 0, "INVALID MOVE.\n MOVE AGAIN.", green);
 			int srcPiece = boardarray[lastx][lasty];
@@ -1000,7 +989,7 @@ bool Board::handleClick(int p, int x, int y, bool select)
 			//debugbox.fill(0).draw_text(0, 0, "PIECE DESELECTED.", green);
 		}
 	}
-	else
+	else //first move special case
 	{
 		if(p != BLANK){
 		lastx = x;
@@ -1016,5 +1005,5 @@ bool Board::handleClick(int p, int x, int y, bool select)
 		debugbox.fill(0).draw_text(0, 0, "PIECE SELECTED.", green);
 		}
 	}
-	return true;
+	return true; //if conditions are valid, this returns true to main
 }
