@@ -25,6 +25,7 @@ class Piece {
 		int counterGraveyard;
 		bool firstMoved;
 		
+		
 
 	public:
 		Piece(){};
@@ -39,10 +40,11 @@ class Piece {
 			this->blackScore = 0;
 			this->whiteScore = 0;
 			firstMoved = true;
+
 			//int counterGraveyard = 0;
 			
 		}
-		virtual bool moveLegal(int x, int y, int destPiece){};
+		virtual bool moveLegal(int x, int y, int srcX, int srcY, int destPiece){};
 		int* getPosition();							//inteact with 2D array, check legal move								//determines if piece is taken, mutates bool dead
 		int getType();	
 		bool getWhite();
@@ -54,6 +56,9 @@ class Piece {
 		virtual void setFirstMoved(){};
 		virtual void setPassantCount(int passantCount){};
 		virtual int getPassantCount(){};
+		virtual void setTransform(){};
+		virtual bool getPawnTrans(){};
+		virtual int getPieceRule(){};
 		bool getFirstMoved();
 		int getX();
 		int getY();
@@ -67,15 +72,23 @@ class Pawn : public Piece{
 
 	public:
 		int passantCount;
+		bool pawnTrans;
+		int pieceRule;
+
 		Pawn(bool white, int positionX, int positionY, int type = 0, string sprite = "PawnPic") : 
 			Piece(white, positionX, positionY, type, sprite){
 			passantCount = -1;
+			pawnTrans = false;
+			pieceRule = -1;
 		};
 		~Pawn(){};
-		bool moveLegal(int x, int y, int destPiece);	//checks if the move is allowed and if so, mutates position
+		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 		void setFirstMoved();
 		void setPassantCount(int passantCount);
 		int getPassantCount();
+		void setTransform();
+		bool getPawnTrans();
+		int getPieceRule();
 		//void transformer();			//once across board, option to change
 };
 
@@ -87,7 +100,7 @@ class Bishop : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Bishop(){};
-		bool moveLegal(int x, int y, int destPiece);	//checks if the move is allowed and if so, mutates position
+		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 };
 
 class Knight : public Piece{
@@ -96,7 +109,7 @@ class Knight : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Knight(){};
-		bool moveLegal(int x, int y, int destPiece);	//checks if the move is allowed and if so, mutates position
+		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 };
 
 class Rook : public Piece{
@@ -110,7 +123,7 @@ class Rook : public Piece{
 	//		firstMoved = true;
 		};
 		~Rook(){};
-		bool moveLegal(int x, int y, int destPiece);	//checks if the move is allowed and if so, mutates position
+		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 		void setFirstMoved();
 };
 
@@ -121,7 +134,7 @@ class Queen : public Piece{
 			Piece(white, positionX, positionY, type, sprite){
 		};
 		~Queen(){};
-		bool moveLegal(int x, int y, int destPiece);	//checks if the move is allowed and if so, mutates position
+		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 };
 
 class King : public Piece{
@@ -134,6 +147,6 @@ class King : public Piece{
 //				firstMoved = true;
 		};
 		~King(){};
-		bool moveLegal(int x, int y, int destPiece);
+		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);
 		void setFirstMoved();
 };
