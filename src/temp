@@ -109,3 +109,103 @@ else if(newX != -2 && turn) //hypo array, white is in check
 		
 		
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	if((piece ==  wlpawn || piece == wdpawn) && (desty == 0))// Transfogjsei0fj white
+	{
+			debugbox.draw_image(0*PIXELSQUARESIZE, 0, wlknight);
+		debugbox.draw_image(1*PIXELSQUARESIZE, 0, wlbishop);
+		debugbox.draw_image(2*PIXELSQUARESIZE, 0, wlrook);
+		debugbox.draw_image(3*PIXELSQUARESIZE, 0, wlqueen);
+		
+		while (!debug_disp.is_closed()){ debug_disp.wait();
+		if (debug_disp.button() && debug_disp.mouse_y()>=0) //if mouse is clicked on screen
+		{		
+
+			const int x = debug_disp.mouse_x();//get x coordinate
+			if(x < PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,WHITEKNIGHT);
+			else if( x < 2*PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,WHITEBISHOP);
+			else if(x < 3*PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,WHITEROOK);
+			else if(x < 4*PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,WHITEQUEEN);
+		}}
+	} 
+	else if((piece == blpawn || piece ==  bdpawn) && (desty == 7))// Transfogjsei0fj black
+	{
+		debugbox.draw_image(0*PIXELSQUARESIZE, 0, blknight);
+		debugbox.draw_image(1*PIXELSQUARESIZE, 0, blbishop);
+		debugbox.draw_image(2*PIXELSQUARESIZE, 0, blrook);
+		debugbox.draw_image(3*PIXELSQUARESIZE, 0, blqueen);
+		while (!debug_disp.is_closed()){ debug_disp.wait();
+		if (debug_disp.button() && debug_disp.mouse_y()>=0) //if mouse is clicked on screen
+		{
+		debugbox.draw_image(0*PIXELSQUARESIZE, 0, blknight);
+		debugbox.draw_image(1*PIXELSQUARESIZE, 0, blbishop);
+		debugbox.draw_image(2*PIXELSQUARESIZE, 0, blrook);
+		debugbox.draw_image(3*PIXELSQUARESIZE, 0, blqueen);
+			const int x = debug_disp.mouse_x();//get x coordinate
+			if(x < PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,BLACKKNIGHT);
+			else if( x < 2*PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,BLACKBISHOP);
+			else if(x < 3*PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,BLACKROOK);
+			else if(x < 4*PIXELSQUARESIZE)
+				piece = parseDraw(destx,desty,BLACKQUEEN);
+		}
+}
