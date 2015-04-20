@@ -11,25 +11,25 @@
 
 using namespace std;
 
-class Piece {
+class Piece { //creates superclass piece
 	protected:
 		int type;					//Queen, King, 	etc.
-		int move[2];
-		int position[2];
-		string sprite;				//Image file link
+		int move[2];				//where they want to move
+		int position[2];			//curent position
+		string sprite;				
 		bool white;					//black or white
 		bool dead;					//on board or not
 		
 		int blackScore;
 		int whiteScore;
 		int counterGraveyard;
-		bool firstMoved;
+		bool firstMoved;			//first moved boolean for cases like pawn moving twice on first move, castling, etc.
 		
 		
 
 	public:
-		Piece(){};
-		Piece(bool white, int positionX, int positionY, int type, string sprite){
+		Piece(){}; //default constructor for piece array later on
+		Piece(bool white, int positionX, int positionY, int type, string sprite){ //actual constructor
 			this->type = type;
 			this->sprite = sprite;
 			move[0] = 0;
@@ -44,9 +44,10 @@ class Piece {
 			//int counterGraveyard = 0;
 			
 		}
-		virtual bool moveLegal(int x, int y, int srcX, int srcY, int destPiece){};
+		//methods - various getters, setters, and methods for transformations, special moves, etc.
+		virtual bool moveLegal(int x, int y, int srcX, int srcY, int destPiece){}; 
 		int* getPosition();							//inteact with 2D array, check legal move								//determines if piece is taken, mutates bool dead
-		int getType();	
+		int getType();		
 		bool getWhite();
 		bool getDead();
 		//void kill(int move[]);
@@ -65,7 +66,7 @@ class Piece {
 		
 };
 
-class Pawn : public Piece{
+class Pawn : public Piece{ //pawne subclass, inheritance, initializes some variables/methods but also has some more specific ones
 	//private:
 	//	bool firstMoved;			//checks if pawn has been moved for two move rule
 		
@@ -93,7 +94,7 @@ class Pawn : public Piece{
 };
 
 
-class Bishop : public Piece{
+class Bishop : public Piece{ //bishop subclass
 
 	public:
 		Bishop(bool white, int positionX, int positionY, int type = 1, string sprite = "BishopPic") : 
@@ -103,7 +104,7 @@ class Bishop : public Piece{
 		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 };
 
-class Knight : public Piece{
+class Knight : public Piece{ //knight subclass
 	public:
 		Knight(bool white, int positionX, int positionY, int type = 2, string sprite = "KnightPic") : 
 			Piece(white, positionX, positionY, type, sprite){
@@ -112,7 +113,7 @@ class Knight : public Piece{
 		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 };
 
-class Rook : public Piece{
+class Rook : public Piece{ //rook subclass
 
 	//private:
 	//	bool firstMoved;			//checks if rook has been moved for castling rule
@@ -127,7 +128,7 @@ class Rook : public Piece{
 		void setFirstMoved();
 };
 
-class Queen : public Piece{
+class Queen : public Piece{ //queen subclass
 
 	public:
 		Queen(bool white, int positionX, int positionY, int type = 4, string sprite = "QueenPic") : 
@@ -137,7 +138,7 @@ class Queen : public Piece{
 		bool moveLegal(int x, int y, int srcX, int srcY, int destPiece);	//checks if the move is allowed and if so, mutates position
 };
 
-class King : public Piece{
+class King : public Piece{ //king subclass
 //	private:
 //		bool firstMoved; // true = on its first move, false = moved already
 	
