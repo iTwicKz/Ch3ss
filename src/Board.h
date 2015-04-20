@@ -1,57 +1,52 @@
-#include "CImg.h"
+#include "CImg.h"		//our image rendering
 
 
-#ifndef IMAGEPATH
-#define IMAGEPATH "res/Default/"
+#ifndef IMAGEPATH		
+#define IMAGEPATH "res/Default/"	//image files source folder
 #endif
 
-#define BLANK -1
-#define WHITEKING 30
-#define WHITEQUEEN 28
-#define WHITEKNIGHT 20
-#define WHITEKNIGHTTWO 22
-#define WHITEBISHOP 16
-#define WHITEBISHOPTWO 18
-#define WHITEROOK 24
-#define WHITEROOKTWO 26
-#define WHITEPAWN 0
-#define WHITEPAWNTWO 1
-#define WHITEPAWNTHREE 2
-#define WHITEPAWNFOUR 3
-#define WHITEPAWNFIVE 4
-#define WHITEPAWNSIX 5
-#define WHITEPAWNSEVEN 6
-#define WHITEPAWNEIGHT 7
-#define BLACKKING 31
-#define BLACKQUEEN 29
-#define BLACKKNIGHT 21
-#define BLACKKNIGHTTWO 23
-#define BLACKBISHOP 17
-#define BLACKBISHOPTWO 19
-#define BLACKROOK 25
-#define BLACKROOKTWO 27
-#define BLACKPAWN 8
-#define BLACKPAWNTWO 9
-#define BLACKPAWNTHREE 10
-#define BLACKPAWNFOUR 11
-#define BLACKPAWNFIVE 12
-#define BLACKPAWNSIX 13
-#define BLACKPAWNSEVEN 14 
-#define BLACKPAWNEIGHT 15
+//--------------------------MACRO DEFINITIONS----------------------------------//
+#define BLANK -1 				//blank space identifier
+#define WHITEKING 30			//white king identifier
+#define WHITEQUEEN 28			//white queen identifier
+#define WHITEKNIGHT 20			//white knight identifier
+#define WHITEKNIGHTTWO 22		//second white knight identifier
+#define WHITEBISHOP 16			//white bishop identifier
+#define WHITEBISHOPTWO 18		//second white bishop identifier
+#define WHITEROOK 24			//white rook identifier
+#define WHITEROOKTWO 26			//second white rook identifier
+#define WHITEPAWN 0 			//white pawn identifier
+#define WHITEPAWNTWO 1 			//second white pawn identifier
+#define WHITEPAWNTHREE 2 		//third white pawn identifier
+#define WHITEPAWNFOUR 3 		//fourth white pawn identifier
+#define WHITEPAWNFIVE 4 		//fifth white pawn identifier
+#define WHITEPAWNSIX 5 			//sixth white pawn identifier
+#define WHITEPAWNSEVEN 6 		//seventh white pawn identifier
+#define WHITEPAWNEIGHT 7 		//eighth white pawn identifier
+#define BLACKKING 31 			//black king identifier
+#define BLACKQUEEN 29 			//black queen identifier
+#define BLACKKNIGHT 21 			//black knight identifier
+#define BLACKKNIGHTTWO 23 		//second black knight identifier
+#define BLACKBISHOP 17 			//black bishop identifier
+#define BLACKBISHOPTWO 19 		//second black bishop identifier
+#define BLACKROOK 25 			//black rook identifier
+#define BLACKROOKTWO 27  		//second black rook identifier
+#define BLACKPAWN 8  			//black pawn identifier
+#define BLACKPAWNTWO 9			//second black pawn identifier
+#define BLACKPAWNTHREE 10 		//third black pawn identifier
+#define BLACKPAWNFOUR 11  		//fourth black pawn identifier
+#define BLACKPAWNFIVE 12 		//fifth black pawn identifier
+#define BLACKPAWNSIX 13 		//sixth black pawn identifier
+#define BLACKPAWNSEVEN 14  		//seventh black pawn identifier
+#define BLACKPAWNEIGHT 15  		//eighth black pawn identifier
 
-//0-7 white pawns
-//8-15 black pawns
-//16,18 white bishops
-//17,19 black bishops
-//2
+#define PIXELSQUARESIZE 100		//changes simple intergers into pixels blocks to form buttons
+//------------------------------------------------------------------------------//
 
-#define PIXELSQUARESIZE 100
-//#define XPADDING 10
-//#define YPADDING 10
+using namespace cimg_library;	//image rendering
 
-using namespace cimg_library;
-
-//each piece is 60px by 60px chessboard is 480px by 480px or 60px * 8
+//--------------------------IMAGE FILES----------------------------------------//
+  //each piece is 60px by 60px chessboard is 480px by 480px or 60px * 8//
 CImg<unsigned char> chessboard(IMAGEPATH "chessboard.jpg"); 
 
 CImg<unsigned char> wlking(IMAGEPATH "King-White-Light.jpg");
@@ -83,14 +78,13 @@ CImg<unsigned char> dblank(IMAGEPATH "Blank-Dark.jpg");
 
 CImg<unsigned char> selection(IMAGEPATH "selection.jpg");
 
+//------------------------------------------------------------------------------//
+
 CImg<unsigned char> debugbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0); //debug box
-
-
 
 //Displays (each display is a new window)
 CImgDisplay main_disp(chessboard,"Chess");
 CImgDisplay debug_disp(debugbox,"Debug");
-
 
 //Boardarray 
 int boardarray[8][8];
@@ -109,28 +103,25 @@ bool check = false;
 
 class Board 
 {
-	friend class Piece;
+	friend class Piece;		//allows for Piece to have certain access to Board class
 	
 	public:
-		Board(){};
-		//methods
-		Piece* pieceArray[32];
-		void setupPieceArray();
-		void updateBoard();
-		int returnPiece(int x, int y);
-		int getMoveCount();
-		CImg<unsigned char> parseDraw(int xx, int yy, int pp);
-		void setup();
-		void moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, int desty);
-		bool handleClick(int p, int x, int y, bool select);
-		bool collision(int moveX, int moveY, int positionX, int positionY);
-
-		bool validMove(int srcX, int srcY, int destx, int desty);
-		void enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece, bool whiteColorsrc, int srcPieceColor);
-		void castling(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece);
-		bool isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY);
-
-		//bool check = false;
-
+		Board(){};			//Board default constructor
+		Piece* pieceArray[32];	//Array which houses all 32 Piece Objects and, in turn, thier information
+		//Methods
+		void setupPieceArray();	//initialized PieceArray with loops
+		void updateBoard();		//redraws the board onto the screen
+		int returnPiece(int x, int y);	//returns piece identitfier based on position on board
+		int getMoveCount();				//returns the amount of counts that have occurred in the game
+		CImg<unsigned char> parseDraw(int xx, int yy, int pp);		//converts piece identifier into image file path
+		void setup();			//setup for board array and game display
+		void moveDraw(CImg<unsigned char> piece, int srcX, int srcY, int destx, int desty);		//draws moving of pieces after validation process
+		bool handleClick(int p, int x, int y, bool select);										//handles selection, deselection, and movement for pieces on board
+		bool collision(int moveX, int moveY, int positionX, int positionY);						//returns whether or not there is a clear legal path between the source and destination
+		bool validMove(int srcX, int srcY, int destx, int desty);								//checks if move is a legal move based on collision, piece laws, friendly fire, and check
+		void enPassant(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece, bool whiteColorsrc, int srcPieceColor);		//handles special en passant move for pawns
+		void castling(bool *typeMoveLegal, int srcX, int srcY, int destx, int desty, int srcPiece);		//handles special castling move for kings and rooks
+		bool isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY);					//checks for check
 };
+
 
