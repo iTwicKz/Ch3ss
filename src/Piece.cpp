@@ -1,4 +1,5 @@
 #include "Piece.h"
+#include "Board.h"
 
 int* Piece::getPosition(){
 		return position;
@@ -41,7 +42,7 @@ bool Piece::getFirstMoved(){
 //----------------------------------------------------------------------------------------------------------------
 
 //----------------------------------------------------------------------------------------------------------------
-bool Pawn::moveLegal(int x, int y, int destPiece){ // fix en passant
+bool Pawn::moveLegal(int x, int y, int srcX, int srcY, int destPiece){ // fix en passant
 
 	bool valid = false; 
 	
@@ -91,45 +92,7 @@ bool Pawn::moveLegal(int x, int y, int destPiece){ // fix en passant
 void Pawn::setFirstMoved(){
 	firstMoved = false;
 }
-/*
-void Pawn::transformer(){ //UPDATE WITH PIECEARRAY
-		bool chosen = false;
-		while (!chosen){
-			string option;
-			cout << "Who do you want to be: \n Queen, Weenie, Rook, Bishop, Knight, King Weenie!";
-			cin >> option;
 
-			string lowerOption = "";
-			for(unsigned i = 0; i < option.size(); i++){
-				lowerOption += tolower(option.at(i));
-			}
-			
-			if(lowerOption.compare("queen") == 0){
-				chosen = true;
-				//create a new queen with location = position
-			}
-			else if(lowerOption.compare("rook") == 0){
-				chosen = true;
-				//create a new rook with location = position
-			}
-			else if(lowerOption.compare("bishop") == 0){
-				chosen = true;
-				//create a new bishop with location = position
-			}
-			else if(lowerOption.compare("knight") == 0){
-				chosen = true;
-				//create a new knight with location = position
-			}
-			else if(lowerOption.compare("king weenie") == 0){
-				cout << "ALL HAIL KING WEENIE!!!!!!! but seriously..." << endl;
-			}
-			else if(lowerOption.compare("weenie") == 0){
-				cout << "Oh. Choose another... weenie" << endl;
-			}
-			else cout << "Sorry. That is not an option. Please choose again" << endl;
-		}
-}
-*/
 
 void Pawn::setPassantCount(int passantCount){
 	this->passantCount = passantCount;
@@ -139,37 +102,90 @@ int Pawn::getPassantCount(){
 	return passantCount;
 }
 
-//----------------------------------------------------------------------------------------------------------------
-bool Bishop::moveLegal(int x, int y, int destPiece){
+void Pawn::setTransform(){	//just queens for now
 
-	bool valid = false;
-	
-	move[0] = x;
-	move[1] = y;
-
-	if(abs(move[0] - position[0]) == abs(move[1] - position[1])){
-		valid = true;
-	}
-	
-	else cout<<"Brahhhhhhhhhhh you can't move dat";
-	
-	return valid;
-	
-} 
-//----------------------------------------------------------------------------------------------------------------
-bool Knight::moveLegal(int x, int y, int destPiece){
-
-	bool valid = false;
-	
-	move[0] = x;
-	move[1] = y;
+	CImg<unsigned char> dialbox(4*PIXELSQUARESIZE,1*PIXELSQUARESIZE,1,3,0);
+	CImgDisplay dial_disp(dialbox, "Please select which piece you want");
+	pawnTrans = true;
 
 
-	int moveSpaceHor = move[0] - position[0];
-	int moveSpaceVer = move[1] - position[1];
-	
-	if((abs(moveSpaceHor) == 1 || abs(moveSpaceHor) == 2) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3)
+	int input;
+	if(white)
 	{
+		
+	dialbox.draw_image(0, 0, wlknight);
+	dialbox.draw_image(100, 0, wlbishop);
+	dialbox.draw_image(200, 0, wlrook);
+	dialbox.draw_image(300, 0, wlqueen);
+	dialbox.display(dial_disp);
+	while (!dial_disp.is_closed())
+		{ 
+			dial_disp.wait();
+		if (dial_disp.button() && dial_disp.mouse_y()>=0) //if mouse is clicked on screen
+			{		
+
+			const int x = dial_disp.mouse_x();//get x coordinate
+			if(x < 100)
+				pieceRule = 20;
+			else if( x < 200)
+				pieceRule = 16;
+			else if(x < 300)
+				pieceRule = 24;
+			else if(x < 400)
+				pieceRule = 28;
+			}
+		}
+	}
+	else//blakc
+	{
+			dialbox.draw_image(0, 0, blknight);
+	dialbox.draw_image(100, 0, blbishop);
+	dialbox.draw_image(200, 0, blrook);
+	dialbox.draw_image(300, 0, blqueen);
+	dialbox.display(dial_disp);
+	while (!dial_disp.is_closed())
+		{ 
+			dial_disp.wait();
+		if (dial_disp.button() && dial_disp.mouse_y()>=0) //if mouse is clicked on screen
+			{		
+
+			const int x = dial_disp.mouse_x();//get x coordinate
+			if(x < 100)
+				pieceRule = 21;
+			else if( x < 200)
+				pieceRule = 17;
+			else if(x < 300)
+				pieceRule = 25;
+			else if(x < 400)
+				pieceRule = 29;
+			}
+		}
+	}
+}
+
+
+bool Pawn::getPawnTrans(){
+	return pawnTrans;
+}
+
+int Pawn::getPieceRule(){
+	return pieceRule;
+}
+//----------------------------------------------------------------------------------------------------------------
+bool Bishop::moveLegal(int x, int y, int srcX, int srcY, int destPiece){
+
+	bool valid = false;
+
+	if(srcX == -2)
+	{
+		if(abs(x - position[0]) == abs(y - position[1]))
+		{
+			valid = true;
+		}
+
+
+	}
+	else if(abs(x - srcX) == abs(y - srcY)){
 		valid = true;
 	}
 	
@@ -177,7 +193,38 @@ bool Knight::moveLegal(int x, int y, int destPiece){
 	
 } 
 //----------------------------------------------------------------------------------------------------------------
-bool Rook::moveLegal(int x, int y, int destPiece) {
+bool Knight::moveLegal(int x, int y, int srcX, int srcY, int destPiece){
+
+	bool valid = false;
+	
+	move[0] = x;
+	move[1] = y;
+
+	if(srcX == -2)
+	{
+		int moveSpaceHor = move[0] - position[0];
+		int moveSpaceVer = move[1] - position[1];
+
+		if((abs(moveSpaceHor) == 1 || abs(moveSpaceHor) == 2) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3)
+		{
+			valid = true;
+		}
+	
+	}
+	else
+	{
+		int moveSpaceHor = move[0] - srcX;
+		int moveSpaceVer = move[1] - srcY;
+
+		if((abs(moveSpaceHor) == 1 || abs(moveSpaceHor) == 2) && abs(moveSpaceHor) + abs(moveSpaceVer) == 3)
+			valid = true;
+	}
+	
+	return valid;
+	
+} 
+//----------------------------------------------------------------------------------------------------------------
+bool Rook::moveLegal(int x, int y, int srcX, int srcY, int destPiece) {
 	
 	bool valid = false;
 	
@@ -186,21 +233,39 @@ bool Rook::moveLegal(int x, int y, int destPiece) {
 	move[0] = x;
 	move[1] = y;
 
-	
-	int moveSpacesHor = move[0] - position[0];
-	int moveSpacesVer = move[1] - position[1];
-	
-	if(moveSpacesHor!=0 && move[1] == position[1]) 
+	if(srcX == -2)
 	{
-		valid = true;
-		
-	} else if(moveSpacesVer !=0 && move[0] == position[0]) 
-	{
-		valid = true;
-	} else cout<<"Brahhhhhhhhhhh you can't move dat";
+		int moveSpacesHor = move[0] - position[0];
+		int moveSpacesVer = move[1] - position[1];
 	
-	//Work on castling	
+		if(moveSpacesHor!=0 && move[1] == position[1]) 
+		{
+			valid = true;
 		
+		} 
+		else if(moveSpacesVer !=0 && move[0] == position[0]) 
+		{
+			valid = true;
+		} 
+		else cout<<"Brahhhhhhhhhhh you can't move dat";
+
+	}
+	else
+	{
+		int moveSpacesHor = move[0] - srcX;
+		int moveSpacesVer = move[1] - srcY;
+	
+		if(moveSpacesHor!=0 && move[1] == srcY) 
+		{
+			valid = true;
+		} 
+		else if(moveSpacesVer !=0 && move[0] == srcX) 
+		{
+			valid = true;
+		} 
+		else cout<<"Brahhhhhhhhhhh you can't move dat";
+
+	}
 	
 	return valid;
 	
@@ -210,36 +275,56 @@ void Rook::setFirstMoved(){
 	firstMoved = false;
 }
 //----------------------------------------------------------------------------------------------------------------
-bool Queen::moveLegal(int x, int y, int destPiece) {
+bool Queen::moveLegal(int x, int y, int srcX, int srcY, int destPiece) {
 
 	bool valid = false;
 	
 	move[0] = x;
 	move[1] = y;
 
+	if(srcX == -2)
+	{
+		int moveSpacesHor = move[0] - position[0];
+		int moveSpacesVer = move[1] - position[1];
+			
 
-	int moveSpacesHor = move[0] - position[0];
-	int moveSpacesVer = move[1] - position[1];
-		
+		if( moveSpacesHor!=0 && move[1] == position[1]) {
+				valid = true;
+			
+		} else if(moveSpacesVer !=0 && move[0] == position[0]) {
+				valid = true;
+			
+		} else if(abs(moveSpacesHor) == abs(moveSpacesVer)) {
+				valid = true;
+			
+		} else cout<<"Brahhhhhhhhhhh you can't move dat";
 
-	if( moveSpacesHor!=0 && move[1] == position[1]) {
-			valid = true;
-		
-	} else if(moveSpacesVer !=0 && move[0] == position[0]) {
-			valid = true;
-		
-	} else if(abs(moveSpacesHor) == abs(moveSpacesVer)) {
-			valid = true;
-		
-	} else cout<<"Brahhhhhhhhhhh you can't move dat";
+	}
+	else
+	{
+		int moveSpacesHor = move[0] - srcX;
+		int moveSpacesVer = move[1] - srcY;
+			
 
-		
+		if( moveSpacesHor!=0 && move[1] == srcY) {
+				valid = true;
+			
+		} else if(moveSpacesVer !=0 && move[0] == srcX) {
+				valid = true;
+			
+		} else if(abs(moveSpacesHor) == abs(moveSpacesVer)) {
+				valid = true;
+			
+		} else cout<<"Brahhhhhhhhhhh you can't move dat";
+
+	}
+	
 	
 	return valid;
 	
 }
 //----------------------------------------------------------------------------------------------------------------
-bool King::moveLegal(int x, int y, int destPiece) {
+bool King::moveLegal(int x, int y, int srcX, int srcY, int destPiece) {
 
 	bool valid = false;
 	
@@ -260,29 +345,7 @@ bool King::moveLegal(int x, int y, int destPiece) {
 	} 
 	else if (abs(move[0] - position[0]) == 2 && firstMoved && move[1]==position[1]) //castle
 	{
-		/*if(move[0] == 6 && collision(move,position) && !collisionAttack(move)) 
-		{
-			if(isCheck(4,position[1]) && isCheck(5,position[1]) && isCheck(6,position[1])) //castle right
-			{
-				position[0] = move[0];
-				position[1] = move[1];
-				valid = true;
-				if(white)
-					castle(white, right);
-				else(black)
-					castle(black, right);
-					
-			}
-		}
-		else if (move[0] = 2 && collision(move,position) && !collisionAttack(move))
-		{
-			if(isCheck(2,position[1]) && isCheck(3,position[1]) && isCheck(4,position[1])) //castle left
-			{
-				position[0] = move[0];
-				position[1] = move[1];
-				valid = true;
-			}
-		}*/
+		
 	}
 	else cout<<"Brahhhhhhhhhhh you can't move dat";
 
