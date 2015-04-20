@@ -103,12 +103,35 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 	{
 		for(int i = 0; i < 32; i++)
 		{
+			int xNum = -2;
+			int yNum = -2;
+			int tempI = -2;
+				if(i >= 8 && i <= 15){
+					if(pieceArray[i]->getPawnTrans()){
+						xNum = pieceArray[i]->getX();
+						yNum = pieceArray[i]->getY();
+						tempI = pieceArray[i]->getPieceRule();
+						//i = pieceArray[i]->getPieceRule();
+					}
+				}
+
 			if((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27)
 			{
-				if(pieceArray[i]->moveLegal(kingX, kingY, -2, -2, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+				if(tempI != -2)
 				{
+					if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					{
 					//isCheckmate();
 					return true;
+					}
+				}
+				else 
+				{
+					if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					{
+						//isCheckmate();
+						return true;
+					}
 				}
 			}
 		}
@@ -118,13 +141,36 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 	{
 		for(int i = 0; i < 32; i++)
 		{
+			int xNum = -2;
+			int yNum = -2;
+			int tempI = -2;
+				if(i >= 0 && i <= 7){
+					if(pieceArray[i]->getPawnTrans()){
+						xNum = pieceArray[i]->getX();
+						yNum = pieceArray[i]->getY();
+						tempI = pieceArray[i]->getPieceRule();
+						//i = pieceArray[i]->getPieceRule();
+					}
+				}
 			if((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26)
 			{
-				if(pieceArray[i]->moveLegal(kingX, kingY, -2, -2, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+				if(tempI != -2)
 				{
-					//isCheckmate();
-					return true;
+					if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					{
+						//isCheckmate();
+						return true;
+					}
 				}
+				else
+				{
+					if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					{
+						//isCheckmate();
+						return true;
+					}
+				}
+	
 			}
 		}
 	}
@@ -136,7 +182,7 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			int queenIndex; //return to newX if fail
 			int knightIndex; //return to oldX if fail
 			for(int i = 0; i < 32; i++) //gets rid of queen
-			{
+			{	
 				if(pieceArray[i]->getX() == newX && pieceArray[i]->getY() == newY)
 				{
 					queenIndex = i;
@@ -161,27 +207,68 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			boardarray[oldX][oldY] = -1;
 			for(int i = 0; i < 32; i++)
 			{
+				int xNum = -2;
+				int yNum = -2;
+				int tempI = -2;
+				if(i >= 8 && i <= 15){
+					if(pieceArray[i]->getPawnTrans()){
+						xNum = pieceArray[i]->getX();
+						yNum = pieceArray[i]->getY();
+						tempI = pieceArray[i]->getPieceRule();
+						//i = pieceArray[i]->getPieceRule();
+						}
+					}
+
 				if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && i != queenIndex && knightIndex != 30)
 				{
-					if(pieceArray[i]->moveLegal(kingX, kingY, -2, -2, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[queenIndex]->setPosition(newX, newY);
-						pieceArray[knightIndex]->setPosition(oldX,oldY);
-						boardarray[oldX][oldY] = knightBoardIndex;
-						boardarray[newX][newY] = queenBoardIndex;
-						return true;
+						if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
 					}
 				}
 				else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && i != queenIndex && knightIndex == 30)
 				{
-					if(pieceArray[i]->moveLegal(newX, newY, -2, -2, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
-					{ 
-						pieceArray[queenIndex]->setPosition(newX, newY);
-						pieceArray[knightIndex]->setPosition(oldX,oldY);
-						boardarray[oldX][oldY] = knightBoardIndex;
-						boardarray[newX][newY] = queenBoardIndex;
-						return true;
+					if(tempI != -2)
+					{
+						if(pieceArray[tempI]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{ 
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX,oldY);
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
 					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{ 
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX,oldY);
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
+					}
+
 				}
 			}
 			//pieceArray[queenIndex]->setPosition(newX, newY);
@@ -208,24 +295,61 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			boardarray[oldX][oldY] = -1;
 			for(int i = 0; i < 32; i++)
 			{
+				int xNum = -2;
+				int yNum = -2;
+				int tempI = -2;
+				if(i >= 8 && i <= 15){
+					if(pieceArray[i]->getPawnTrans()){
+						xNum = pieceArray[i]->getX();
+						yNum = pieceArray[i]->getY();
+						tempI = pieceArray[i]->getPieceRule();
+						//i = pieceArray[i]->getPieceRule();
+						}
+					}
 				if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex != 30)
 				{
-					if(pieceArray[i]->moveLegal(kingX, kingY, -2, -2, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[pieceIndex]->setPosition(oldX, oldY);
-						boardarray[oldX][oldY] = boardIndex;
-						boardarray[newX][newY] = -1;
-						return true;
+						if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
 					}
 				}
 				else if(((i >= 8 && i <= 15) || i == 25 || i == 21 || i == 17 || i == 29 || i == 31 || i == 19 || i == 23 || i == 27) && pieceIndex == 30)
 				{
-					if(pieceArray[i]->moveLegal(newX, newY, -2, -2, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[pieceIndex]->setPosition(oldX, oldY);
-						boardarray[oldX][oldY] = boardIndex;
-						boardarray[newX][newY] = -1;
-						return true;
+						if(pieceArray[tempI]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
 					}
 				}
 			}
@@ -242,7 +366,6 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 	{
 		if(boardarray[newX][newY] != -1)
 		{
-
 			int queenIndex; //return to newX if fail
 			int knightIndex; //return to oldX if fail
 			for(int i = 0; i < 32; i++) //gets rid of queen
@@ -271,28 +394,69 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			boardarray[oldX][oldY] = -1;
 			for(int i = 0; i < 32; i++)
 			{
+				int xNum = -2;
+				int yNum = -2;
+				int tempI = -2;
+				if(i >= 0 && i <= 7){
+					if(pieceArray[i]->getPawnTrans()){
+						xNum = pieceArray[i]->getX();
+						yNum = pieceArray[i]->getY();
+						tempI = pieceArray[i]->getPieceRule();
+						//i = pieceArray[i]->getPieceRule();
+						}
+					}
 				if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && /*i != queenIndex &&*/ knightIndex != 31)
 				{
-					if(pieceArray[i]->moveLegal(kingX, kingY, -2, -2, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[queenIndex]->setPosition(newX, newY);
-						pieceArray[knightIndex]->setPosition(oldX,oldY);
-			
-						boardarray[oldX][oldY] = knightBoardIndex;
-						boardarray[newX][newY] = queenBoardIndex;
-						return true;
+						if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX,oldY);
+				
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX,oldY);
+				
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
 					}
 				}
 				else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && i != queenIndex && knightIndex == 31)
 				{
-					if(pieceArray[i]->moveLegal(newX, newY, -2, -2, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[queenIndex]->setPosition(newX, newY);
-						pieceArray[knightIndex]->setPosition(oldX,oldY);
-			
-						boardarray[oldX][oldY] = knightBoardIndex;
-						boardarray[newX][newY] = queenBoardIndex;
-						return true;
+						if(pieceArray[tempI]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX,oldY);
+				
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[queenIndex]->setPosition(newX, newY);
+							pieceArray[knightIndex]->setPosition(oldX,oldY);
+				
+							boardarray[oldX][oldY] = knightBoardIndex;
+							boardarray[newX][newY] = queenBoardIndex;
+							return true;
+						}
 					}
 				}
 			}
@@ -320,24 +484,61 @@ bool Board::isCheck(int kingX, int kingY, int newX, int newY, int oldX, int oldY
 			boardarray[oldX][oldY] = -1;
 			for(int i = 0; i < 32; i++)
 			{
+				int xNum = -2;
+				int yNum = -2;
+				int tempI = -2;
+				if(i >= 0 && i <= 7){
+					if(pieceArray[i]->getPawnTrans()){
+						xNum = pieceArray[i]->getX();
+						yNum = pieceArray[i]->getY();
+						tempI = pieceArray[i]->getPieceRule();
+						//i = pieceArray[i]->getPieceRule();
+						}
+					}
 				if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex != 31)
 				{
-					if(pieceArray[i]->moveLegal(kingX, kingY, -2, -2, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[pieceIndex]->setPosition(oldX, oldY);
-						boardarray[oldX][oldY] = boardIndex;
-						boardarray[newX][newY] = -1;
-						return true;
+						if(pieceArray[tempI]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(kingX, kingY, xNum, yNum, -2) && collision(kingX, kingY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
 					}
 				}
 				else if(((i >= 0 && i <= 7) || i == 24 || i == 20 || i == 16 || i == 28 || i == 30 || i == 18 || i == 22 || i == 26) && pieceIndex == 31)
 				{
-					if(pieceArray[i]->moveLegal(newX, newY, -2, -2, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+					if(tempI != -2)
 					{
-						pieceArray[pieceIndex]->setPosition(oldX, oldY);
-						boardarray[oldX][oldY] = boardIndex;
-						boardarray[newX][newY] = -1;
-						return true;
+						if(pieceArray[tempI]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
+					}
+					else
+					{
+						if(pieceArray[i]->moveLegal(newX, newY, xNum, yNum, -2) && collision(newX, newY, pieceArray[i]->getX(), pieceArray[i]->getY()))
+						{
+							pieceArray[pieceIndex]->setPosition(oldX, oldY);
+							boardarray[oldX][oldY] = boardIndex;
+							boardarray[newX][newY] = -1;
+							return true;
+						}
 					}
 				}
 			}
@@ -687,7 +888,7 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 			if(srcPieceColor == destPieceColor)
 				sameTeam = false;
 			
-			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, srcX, srcY, destPiece); //SRCPEICE
+			typeMoveLegal = pieceArray[srcPiece]->moveLegal(destx, desty, srcX, srcY, destPiece); //SRCPIECE
 			collisionLegal = collision(destx, desty, srcX, srcY);		
 
 			//CASTLING
@@ -751,7 +952,7 @@ bool Board::validMove(int srcX, int srcY, int destx, int desty)
 
 bool Board::handleClick(int p, int x, int y, bool select)
 {
-		if(lastp == p)
+	if(lastp == p)
 	{	
 		CImg<unsigned char> originalPiece = parseDraw(lastx,lasty,lastPieceP);
 		int srcPiece = boardarray[lastx][lasty];
